@@ -1,1 +1,1 @@
-#makefile`
+#!/usr/bin/make
