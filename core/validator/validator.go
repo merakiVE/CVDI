@@ -10,7 +10,7 @@ import (
 	"gopkg.in/go-playground/validator.v9"
 	en_translations "gopkg.in/go-playground/validator.v9/translations/en"
 
-	"meraki/CVDI/types"
+	"github.com/merakiVE/CVDI/core/types"
 )
 
 var (

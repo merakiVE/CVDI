@@ -7,8 +7,8 @@ import (
 
 	arangoDB "github.com/diegogub/aranGO"
 
-	"meraki/CVDI/types"
-	"meraki/CVDI/validator"
+	"github.com/merakiVE/CVDI/core/types"
+	"github.com/merakiVE/CVDI/core/validator"
 )
 
 const (
