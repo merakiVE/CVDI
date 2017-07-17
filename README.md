@@ -34,6 +34,9 @@ Comportamiento del CVDI:
 ![Image of CVDI](https://github.com/merakive/cvdi/blob/master/diagrams/cvdi.png)
 
 
+## Instalacion
+	` go get "github.com/merakiVE/CVDI `
+
 ## ¿Cómo puedo contribuir? 
 Solo debes leer el archivo `contributing.md`, que encontraras en [este enlace](https://github.com/merakive/cvdi/blob/master/.github/CONTRIBUTING.md)
 
