@@ -35,7 +35,7 @@ Comportamiento del CVDI:
 
 
 ## Instalacion
-	` go get "github.com/merakiVE/CVDI `
+	go get github.com/merakiVE/CVDI
 
 ## ¿Cómo puedo contribuir? 
 Solo debes leer el archivo `contributing.md`, que encontraras en [este enlace](https://github.com/merakive/cvdi/blob/master/.github/CONTRIBUTING.md)
