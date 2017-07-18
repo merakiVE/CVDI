@@ -1,14 +1,24 @@
 package types
 
 import (
-	"time"
 	arangoDB "github.com/diegogub/aranGO"
+	"time"
 )
 
-func init() {}
-
 type JsonObject map[string]interface{}
+
 type JsonArray []JsonObject
+
+type Timestamps struct {
+	CreatedAt time.Time `json:"created_at"`
+	UpdatedAt time.Time `json:"updated_at"`
+}
+
+type ResponseAPI struct {
+	Message string      `json:"message"`
+	Data    interface{} `json:"data"`
+	Errors  interface{} `json:"errors"`
+}
 
 type NeuronCEHDUN struct {
 	arangoDB.Document
@@ -27,16 +37,6 @@ type ActionNeuron struct {
 	Description string                 `json:"description"`
 }
 
-type User struct {
-	arangoDB.Document
-
-	Username  string    `json:"username" validate:"required"`
-	Email     string    `json:"email" validate:"required,email"`
-	Password  string    `json:"password" validate:"required"`
-	Token     string    `json:"token"`
-	LastLogin time.Time `json:"last_login"`
-}
-
 type Citizen struct {
 	arangoDB.Document
 
@@ -45,11 +45,4 @@ type Citizen struct {
 	IdentityDocument string `json:"identity_document"`
 	Phone            string `json:"phone"`
 	Address          string `json:"address"`
-	User             User   `json:"user"`
-}
-
-type ResponseAPI struct {
-	Message string      `json:"message"`
-	Data    interface{} `json:"data"`
-	Errors  interface{} `json:"errors"`
 }
