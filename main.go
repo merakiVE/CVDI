@@ -7,14 +7,14 @@ import (
 
 	arangoDB "github.com/diegogub/aranGO"
 
+	"github.com/merakiVE/CVDI/core/db"
 	"github.com/merakiVE/CVDI/core/types"
 	"github.com/merakiVE/CVDI/core/validator"
+
+	"github.com/merakiVE/CVDI/src/models"
 )
 
 const (
-	DBHOST      = "http://localhost:8529"
-	DBUSER      = "root"
-	DBPASSWORD  = ""
 	PORT_SERVER = ":8101"
 )
 
@@ -52,24 +52,13 @@ func main() {
 	app.Run(iris.Addr(PORT_SERVER), iris.WithCharset("UTF-8"))
 }
 
-func getSessionDB() *arangoDB.Session {
-	//ArangoDB
-	s, err := arangoDB.Connect(DBHOST, DBUSER, DBPASSWORD, false)
-
-	if err != nil {
-		panic(err)
-	}
-
-	return s
-}
-
 func getAllUsers(ctx context.Context) {
 
-	result := make([]types.User, 0)
+	result := make([]models.UserModel, 0)
 	var err error
 
 	q := arangoDB.NewQuery("FOR i in users RETURN i")
-	cur, err := getSessionDB().DB("meraki").Execute(q)
+	cur, err := db.GetDatabase("meraki").Execute(q)
 
 	if err != nil {
 
@@ -105,7 +94,8 @@ func getAllUsers(ctx context.Context) {
 
 func createUser(ctx context.Context) {
 
-	var _user types.User
+	var _user models.UserModel
+
 	var err error
 
 	err = ctx.ReadJSON(&_user)
@@ -126,7 +116,8 @@ func createUser(ctx context.Context) {
 	v.Validate(&_user)
 
 	if v.IsValid() {
-		err = getSessionDB().DB("meraki").Col("users").Save(&_user)
+		//err = db.GetDatabase("meraki").Col("users").Save(&_user)
+		db.Save(db.GetDatabase("meraki"), _user)
 
 		if err != nil {
 
