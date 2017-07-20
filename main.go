@@ -10,8 +10,11 @@ import (
 	"github.com/merakiVE/CVDI/core/db"
 	"github.com/merakiVE/CVDI/core/types"
 	"github.com/merakiVE/CVDI/core/validator"
-
+	"github.com/merakiVE/CVDI/core/tags"
 	"github.com/merakiVE/CVDI/src/models"
+
+	"github.com/fatih/structs"
+	"fmt"
 )
 
 const (
@@ -116,7 +119,10 @@ func createUser(ctx context.Context) {
 	v.Validate(&_user)
 
 	if v.IsValid() {
-		//err = db.GetDatabase("meraki").Col("users").Save(&_user)
+
+		a := tags.New()
+		a.ProcessTags(&_user)
+
 		db.Save(db.GetDatabase("meraki"), _user)
 
 		if err != nil {
