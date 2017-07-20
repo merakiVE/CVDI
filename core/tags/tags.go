@@ -1,18 +1,14 @@
 package tags
 
 import (
-	"fmt"
 	"errors"
 	"strings"
 	"github.com/fatih/structs"
 	"gopkg.in/jeevatkm/go-model.v1"
+	"fmt"
 )
 
-var (
-	reservedTags []string
-)
-
-type HandleTag func(i interface{})
+type HandleTag func(i FieldParam)
 
 type StructProcessorTag struct {
 	rulesTag map[string]HandleTag
@@ -20,10 +16,10 @@ type StructProcessorTag struct {
 
 func New() (*StructProcessorTag) {
 	sp := &StructProcessorTag{
-		rulesTag: make(map[string]HandleTag, len(tagsDefaultRules)),
+		rulesTag: make(map[string]HandleTag, len(defaultTagsRules)),
 	}
 
-	for _key, _fn := range tagsDefaultRules {
+	for _key, _fn := range defaultTagsRules {
 		sp.RegisterHandleRule(_key, _fn)
 	}
 
@@ -41,6 +37,20 @@ func (this StructProcessorTag) GetHandleRule(_tag string) (HandleTag) {
 }
 
 func (this *StructProcessorTag) RegisterHandleRule(_tag string, _fn HandleTag) (error) {
+
+	isTagRestricted := false
+
+	//Verify if new tag handle rule is reserved
+	for _, tag_value := range reservedTags {
+		if tag_value == _tag {
+			isTagRestricted = true
+			break
+		}
+	}
+
+	if isTagRestricted {
+		return errors.New("Name tag: " + _tag + " is reserved")
+	}
 
 	if len(_tag) == 0 {
 		return errors.New("Function Key cannot be empty")
@@ -73,10 +83,16 @@ func GetMapTagField(_model interface{}, _fieldName string) (map[string]string) {
 
 	tag, _ := model.Tag(_model, _fieldName)
 
+
+	fmt.Println("get map",strings.Split(strings.TrimSpace(string(tag)), " "))
+	/*if err != nil {
+		panic(err)
+	}
+
 	for _, v := range strings.Split(string(tag), " ") {
 		value := strings.Split(v, ":")
 		map_field[value[0]] = value[1]
-	}
+	}*/
 
 	return map_field
 }
@@ -90,21 +106,34 @@ func (this StructProcessorTag) ProcessTags(_model interface{}) {
 		if field.IsEmbedded() {
 			for _, fieldE := range field.Fields() {
 
-				//fmt.Println(fieldE.Name())
+				data_tags := GetMapTagField(_model, fieldE.Name())
 
-				tx, _ := model.Tag(_model, fieldE.Name())
-				fmt.Println(fieldE.Name(), tx)
+				for key, value_tag := range data_tags {
+
+					cb := this.GetHandleRule(key)
+
+					if cb != nil {
+						cb(ModelParam{
+							field: fieldE,
+							param: value_tag,
+						})
+					}
+
+				}
+
 			}
 		} else {
-			keys_tag := GetKeysTagField(_model, field.Name())
+			data_tags := GetMapTagField(_model, field.Name())
 
-			for _, key := range keys_tag {
+			for key, value_tag := range data_tags {
 
-				fmt.Println(GetMapTagField(_model, field.Name()))
 				cb := this.GetHandleRule(key)
 
 				if cb != nil {
-					cb(_model)
+					cb(ModelParam{
+						field: field,
+						param: value_tag,
+					})
 				}
 
 			}
