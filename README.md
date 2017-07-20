@@ -35,7 +35,21 @@ Comportamiento del CVDI:
 
 
 ## Instalacion
+
+Instalacion de Glide	
+
+	curl https://glide.sh/get | sh
+
+Obtener el paquete
+
 	go get github.com/merakiVE/CVDI
+
+Instalar dependencias
+
+	cd $GOPATH/src/github.com/merakiVE/CVDI
+
+	glide install
+
 
 ## ¿Cómo puedo contribuir? 
 Solo debes leer el archivo `contributing.md`, que encontraras en [este enlace](https://github.com/merakive/cvdi/blob/master/.github/CONTRIBUTING.md)
