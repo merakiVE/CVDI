@@ -1,0 +1,16 @@
+package: github.com/merakiVE/CVDI
+import:
+- package: github.com/diegogub/aranGO
+- package: github.com/fatih/structs
+- package: github.com/go-playground/locales
+  subpackages:
+  - en
+- package: github.com/go-playground/universal-translator
+- package: github.com/kataras/iris
+  subpackages:
+  - context
+  - middleware/logger
+- package: gopkg.in/go-playground/validator.v9
+  subpackages:
+  - translations/en
+- package: gopkg.in/jeevatkm/go-model.v1
