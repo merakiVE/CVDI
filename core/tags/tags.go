@@ -3,33 +3,32 @@ package tags
 import (
 	"fmt"
 	"errors"
+	"strings"
 	"github.com/fatih/structs"
-	//"reflect"
+	"gopkg.in/jeevatkm/go-model.v1"
 )
 
-type HandleTag func(i interface{}) interface{}
+var (
+	reservedTags []string
+)
+
+type HandleTag func(i interface{})
 
 type StructProcessorTag struct {
 	rulesTag map[string]HandleTag
 }
 
-/*
-func Tags(s interface{}) (map[string]reflect.StructTag, error) {
-	sv, err := structValue(s)
-	if err != nil {
-		return nil, err
+func New() (*StructProcessorTag) {
+	sp := &StructProcessorTag{
+		rulesTag: make(map[string]HandleTag, len(tagsDefaultRules)),
 	}
 
-	tags := map[string]reflect.StructTag{}
-
-	fields := modelFields(sv)
-	for _, f := range fields {
-		tags[f.Name] = f.Tag
+	for _key, _fn := range tagsDefaultRules {
+		sp.RegisterHandleRule(_key, _fn)
 	}
 
-	return tags, nil
-}*/
-
+	return sp
+}
 
 func (this StructProcessorTag) GetHandleRule(_tag string) (HandleTag) {
 
@@ -56,7 +55,33 @@ func (this *StructProcessorTag) RegisterHandleRule(_tag string, _fn HandleTag) (
 	return nil
 }
 
-func ProcessTags(_model interface{}) {
+func GetKeysTagField(_model interface{}, _fieldName string) ([]string) {
+	keys := make([]string, 0)
+
+	tag, _ := model.Tag(_model, _fieldName)
+
+	for _, v := range strings.Split(string(tag), " ") {
+		value := strings.Split(v, ":")
+		keys = append(keys, value[0])
+	}
+
+	return keys
+}
+
+func GetMapTagField(_model interface{}, _fieldName string) (map[string]string) {
+	map_field := make(map[string]string, 0)
+
+	tag, _ := model.Tag(_model, _fieldName)
+
+	for _, v := range strings.Split(string(tag), " ") {
+		value := strings.Split(v, ":")
+		map_field[value[0]] = value[1]
+	}
+
+	return map_field
+}
+
+func (this StructProcessorTag) ProcessTags(_model interface{}) {
 
 	modelFields := structs.Fields(_model)
 
@@ -64,11 +89,25 @@ func ProcessTags(_model interface{}) {
 
 		if field.IsEmbedded() {
 			for _, fieldE := range field.Fields() {
-				fmt.Println(fieldE.Name())
+
+				//fmt.Println(fieldE.Name())
+
+				tx, _ := model.Tag(_model, fieldE.Name())
+				fmt.Println(fieldE.Name(), tx)
 			}
-		}else {
+		} else {
+			keys_tag := GetKeysTagField(_model, field.Name())
+
+			for _, key := range keys_tag {
+
+				fmt.Println(GetMapTagField(_model, field.Name()))
+				cb := this.GetHandleRule(key)
+
+				if cb != nil {
+					cb(_model)
+				}
+
+			}
 		}
 	}
 }
-
-/*func ExecuteHandleRuleTag() {}*/
