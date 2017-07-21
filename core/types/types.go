@@ -1,7 +1,7 @@
 package types
 
 import (
-	arangoDB "github.com/diegogub/aranGO"
+	arangoDB "github.com/hostelix/aranGO"
 	"time"
 )
 
