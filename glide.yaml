@@ -1,6 +1,6 @@
 package: github.com/merakiVE/CVDI
 import:
-- package: github.com/diegogub/aranGO
+- package: github.com/hostelix/aranGO
 - package: github.com/fatih/structs
 - package: github.com/go-playground/locales
   subpackages:
