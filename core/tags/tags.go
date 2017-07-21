@@ -2,10 +2,10 @@ package tags
 
 import (
 	"errors"
-	"strings"
-	"github.com/fatih/structs"
+
 	"gopkg.in/jeevatkm/go-model.v1"
-	"fmt"
+	"github.com/fatih/structs"
+	"github.com/fatih/structtag"
 )
 
 type HandleTag func(i FieldParam)
@@ -66,33 +66,34 @@ func (this *StructProcessorTag) RegisterHandleRule(_tag string, _fn HandleTag) (
 }
 
 func GetKeysTagField(_model interface{}, _fieldName string) ([]string) {
-	keys := make([]string, 0)
 
 	tag, _ := model.Tag(_model, _fieldName)
 
-	for _, v := range strings.Split(string(tag), " ") {
-		value := strings.Split(v, ":")
-		keys = append(keys, value[0])
-	}
+	tags, err := structtag.Parse(string(tag))
 
-	return keys
-}
-
-func GetMapTagField(_model interface{}, _fieldName string) (map[string]string) {
-	map_field := make(map[string]string, 0)
-
-	tag, _ := model.Tag(_model, _fieldName)
-
-
-	fmt.Println("get map",strings.Split(strings.TrimSpace(string(tag)), " "))
-	/*if err != nil {
+	if err != nil {
 		panic(err)
 	}
 
-	for _, v := range strings.Split(string(tag), " ") {
-		value := strings.Split(v, ":")
-		map_field[value[0]] = value[1]
-	}*/
+	return tags.Keys()
+}
+
+
+func GetMapTagField(_model interface{}, _fieldName string) (map[string]*structtag.Tag) {
+
+	map_field := make(map[string]*structtag.Tag, 0)
+
+	tag, _ := model.Tag(_model, _fieldName)
+
+	tags, err := structtag.Parse(string(tag))
+
+	if err != nil {
+		panic(err)
+	}
+
+	for _, v := range tags.Tags() {
+		map_field[v.Key] = v
+	}
 
 	return map_field
 }
@@ -115,12 +116,11 @@ func (this StructProcessorTag) ProcessTags(_model interface{}) {
 					if cb != nil {
 						cb(ModelParam{
 							field: fieldE,
-							param: value_tag,
+							nameAction: value_tag.Name,
+							params: value_tag.Options,
 						})
 					}
-
 				}
-
 			}
 		} else {
 			data_tags := GetMapTagField(_model, field.Name())
@@ -132,11 +132,12 @@ func (this StructProcessorTag) ProcessTags(_model interface{}) {
 				if cb != nil {
 					cb(ModelParam{
 						field: field,
-						param: value_tag,
+						nameAction: value_tag.Name,
+						params: value_tag.Options,
 					})
 				}
-
 			}
+
 		}
 	}
 }
