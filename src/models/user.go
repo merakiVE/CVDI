@@ -3,9 +3,8 @@ package models
 import (
 	"time"
 
-	arangoDB "github.com/diegogub/aranGO"
+	arangoDB "github.com/hostelix/aranGO"
 
-	//"github.com/merakiVE/CVDI/core/db"
 	"github.com/merakiVE/CVDI/core/types"
 )
 
