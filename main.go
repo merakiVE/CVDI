@@ -5,16 +5,13 @@ import (
 	"github.com/kataras/iris/context"
 	"github.com/kataras/iris/middleware/logger"
 
-	arangoDB "github.com/diegogub/aranGO"
+	arangoDB "github.com/hostelix/aranGO"
 
 	"github.com/merakiVE/CVDI/core/db"
 	"github.com/merakiVE/CVDI/core/types"
 	"github.com/merakiVE/CVDI/core/validator"
 	"github.com/merakiVE/CVDI/core/tags"
 	"github.com/merakiVE/CVDI/src/models"
-
-	"github.com/fatih/structs"
-	"fmt"
 )
 
 const (
