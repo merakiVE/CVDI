@@ -17,7 +17,7 @@ type UserModel struct {
 
 	Username  string    `json:"username" validate:"required"`
 	Email     string    `json:"email" validate:"required,email"`
-	Password  string    `json:"password" validate:"required"`
+	Password  string    `json:"password" validate:"required" on_create:"make_password"`
 	Token     string    `json:"token"`
 	LastLogin time.Time `json:"last_login"`
 
