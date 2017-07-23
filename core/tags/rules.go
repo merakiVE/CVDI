@@ -4,7 +4,7 @@ import (
 	"github.com/fatih/structs"
 	"reflect"
 	"time"
-	//"golang.org/x/crypto/bcrypt"
+	"golang.org/x/crypto/bcrypt"
 
 )
 
@@ -80,15 +80,18 @@ func RuleOnCreate(f FieldParam) () {
 				}
 			}
 		}
-	}
-}
 
-func RuleMakePassword(f FieldParam) () {
-	if f.GetAction() == "make_password" {
+		case "make_password" : {
 
-		if f.GetField().Kind() == reflect.String {
-			//bytes, err := bcrypt.GenerateFromPassword([]byte(f.GetField().Value()), 14)
-			//f.GetField().Set(string(bytes))
+			if f.GetField().Kind() == reflect.String {
+				bytes, err := bcrypt.GenerateFromPassword([]byte(f.GetField().Value().(string)), 14)
+				
+				if err != nil {
+					panic(err)
+				}
+
+				f.GetField().Set(string(bytes))
+			}
 		}
 	}
 }
