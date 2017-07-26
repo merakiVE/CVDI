@@ -4,7 +4,7 @@ import (
 	arangoDB "github.com/hostelix/aranGO"
 )
 
-type Neuron struct {
+type NeuronModel struct {
 	arangoDB.Document
 
 	ID        string         `json:"id"`
@@ -15,15 +15,15 @@ type Neuron struct {
 	PublicKey string         `json:"public_key"`
 }
 
-func (this Neuron) GetKey() string {
+func (this NeuronModel) GetKey() string {
 	return this.Key
 }
 
-func (this Neuron) GetCollection() string {
+func (this NeuronModel) GetCollection() string {
 	return "neuron"
 }
 
-func (this Neuron) GetError() (string, bool) {
+func (this NeuronModel) GetError() (string, bool) {
 	return this.Message, this.Error
 }
 
