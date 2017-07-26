@@ -114,9 +114,9 @@ func (this StructProcessorTag) ProcessTags(_model interface{}) {
 					cb := this.GetHandleRule(key)
 
 					if cb != nil {
-						cb(ModelParam{
+						cb(FieldParamStruct{
 							field: fieldE,
-							nameAction: value_tag.Name,
+							actionName: value_tag.Name,
 							params: value_tag.Options,
 						})
 					}
@@ -130,9 +130,9 @@ func (this StructProcessorTag) ProcessTags(_model interface{}) {
 				cb := this.GetHandleRule(key)
 
 				if cb != nil {
-					cb(ModelParam{
+					cb(FieldParamStruct{
 						field: field,
-						nameAction: value_tag.Name,
+						actionName: value_tag.Name,
 						params: value_tag.Options,
 					})
 				}

@@ -8,25 +8,25 @@ import (
 
 )
 
-type ModelParam struct {
+type FieldParamStruct struct {
 	field      *structs.Field
-	nameAction string
+	actionName string
 	params     []string
 }
 
-func (this ModelParam) FieldName() (string) {
+func (this FieldParamStruct) FieldName() (string) {
 	return this.field.Name()
 }
 
-func (this ModelParam) GetParams() ([]string) {
+func (this FieldParamStruct) GetParams() ([]string) {
 	return this.params
 }
 
-func (this ModelParam) GetAction() (string) {
-	return this.nameAction
+func (this FieldParamStruct) GetAction() (string) {
+	return this.actionName
 }
 
-func (this ModelParam) GetField() (*structs.Field) {
+func (this FieldParamStruct) GetField() (*structs.Field) {
 	return this.field
 }
 
@@ -49,12 +49,12 @@ var (
 	}
 )
 
-func RuleDefault(_model FieldParam) () {
+func RuleDefault(f FieldParam) () {
 
-	if _model.GetAction() == "auto_now" {
-		if _model.GetField().Kind() == reflect.ValueOf(time.Time{}).Kind() {
+	if f.GetAction() == "auto_now" {
+		if f.GetField().Kind() == reflect.ValueOf(time.Time{}).Kind() {
 
-			_model.GetField().Set(time.Now())
+			f.GetField().Set(time.Now())
 		}
 	}
 }
