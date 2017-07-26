@@ -37,3 +37,8 @@ type Citizen struct {
 	Phone            string `json:"phone"`
 	Address          string `json:"address"`
 }
+
+type UserLogin struct {
+	Username string `json:"username"`
+	Password string `json:"password"`
+}
