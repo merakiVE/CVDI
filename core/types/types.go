@@ -28,25 +28,6 @@ type ResponseAPI struct {
 	Errors  interface{} `json:"errors"`
 }
 
-type NeuronCEHDUN struct {
-	arangoDB.Document
-
-	ID        string         `json:"id"`
-	Host      string         `json:"host"`
-	Port      int            `json:"port"`
-	Name      string         `json:"name"`
-	Actions   []ActionNeuron `json:"actions"`
-	PublicKey string         `json:"public_key"`
-}
-
-type ActionNeuron struct {
-	EndPoint    string                 `json:"end_point"`
-	Params      map[string]interface{} `json:"params"`
-	Method      string                 `json:"method"`
-	Name        string                 `json:"name"`
-	Description string                 `json:"description"`
-}
-
 type Citizen struct {
 	arangoDB.Document
 
