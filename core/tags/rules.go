@@ -5,7 +5,6 @@ import (
 	"reflect"
 	"time"
 	"golang.org/x/crypto/bcrypt"
-
 )
 
 type FieldParamStruct struct {
@@ -38,7 +37,7 @@ type FieldParam interface {
 }
 
 var (
-	defaultTagsRules = map[string]HandleTag{
+	defaultTagsRules = map[string]HandleFuncTag{
 		"default":   RuleDefault,
 		"on_create": RuleOnCreate,
 	}
@@ -63,12 +62,14 @@ func RuleOnCreate(f FieldParam) () {
 
 	switch f.GetAction() {
 
-		case "execute" : {
+	case "execute":
+		{
 
 			// Testing function
 		}
 
-		case "set" : {
+	case "set":
+		{
 
 			params := f.GetParams()
 
@@ -81,11 +82,12 @@ func RuleOnCreate(f FieldParam) () {
 			}
 		}
 
-		case "make_password" : {
+	case "make_password":
+		{
 
 			if f.GetField().Kind() == reflect.String {
 				bytes, err := bcrypt.GenerateFromPassword([]byte(f.GetField().Value().(string)), 14)
-				
+
 				if err != nil {
 					panic(err)
 				}
