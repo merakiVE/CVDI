@@ -8,10 +8,6 @@ import (
 	"github.com/merakiVE/CVDI/core/types"
 )
 
-const (
-	collectionName = "users"
-)
-
 type UserModel struct {
 	arangoDB.Document
 
@@ -29,7 +25,7 @@ func (this UserModel) GetKey() string {
 }
 
 func (this UserModel) GetCollection() string {
-	return collectionName
+	return "users"
 }
 
 func (this UserModel) GetError() (string, bool) {
