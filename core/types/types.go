@@ -31,10 +31,12 @@ type ResponseAPI struct {
 type NeuronCEHDUN struct {
 	arangoDB.Document
 
-	Host    string         `json:"host"`
-	Port    int            `json:"port"`
-	Name    string         `json:"name"`
-	Actions []ActionNeuron `json:"actions"`
+	ID        string         `json:"id"`
+	Host      string         `json:"host"`
+	Port      int            `json:"port"`
+	Name      string         `json:"name"`
+	Actions   []ActionNeuron `json:"actions"`
+	PublicKey string         `json:"public_key"`
 }
 
 type ActionNeuron struct {
