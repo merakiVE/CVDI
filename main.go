@@ -12,6 +12,8 @@ import (
 	"github.com/merakiVE/CVDI/core/validator"
 	"github.com/merakiVE/CVDI/core/tags"
 	"github.com/merakiVE/CVDI/src/models"
+	"github.com/merakiVE/CVDI/core/auth"
+	"fmt"
 )
 
 const (
@@ -44,12 +46,59 @@ func main() {
 		routerUsers.Post("/create", createUser)
 	}
 
-	routerAdmin := app.Party("/admin")
+	routerAdmin := app.Party("/auth")
 	{
-		routerAdmin.Get("/neuron", getAllUsers)
+		routerAdmin.Post("/login", login)
 	}
 
 	app.Run(iris.Addr(PORT_SERVER), iris.WithCharset("UTF-8"))
+}
+
+func login(ctx context.Context) {
+	var _form types.UserLogin
+	var _user models.UserModel
+
+	err := ctx.ReadJSON(&_form)
+
+	if err != nil {
+
+		ctx.StatusCode(iris.StatusInternalServerError)
+		ctx.JSON(types.ResponseAPI{
+			Message: "Invalid data user",
+			Data:    nil,
+			Errors:  nil,
+		})
+		return
+	}
+
+	sq := fmt.Sprintf("FOR user in users FILTER user.username == '%s' RETURN user", _form.Username)
+
+	q := arangoDB.NewQuery(sq)
+	cur, err := db.GetDatabase("meraki").Execute(q)
+
+	if err != nil {
+
+		ctx.StatusCode(iris.StatusInternalServerError)
+		ctx.JSON(types.ResponseAPI{
+			Message: "Fail",
+			Data:    nil,
+			Errors:  nil,
+		})
+		return
+	}
+
+	_err := cur.FetchOne(&_user)
+
+	if !_err {
+		fmt.Println("Error get user")
+	}
+
+	if auth.VerifyPassword([]byte(_user.Password), []byte(_form.Password)) {
+		fmt.Println("Es el password del usuario")
+	} else {
+		fmt.Println(_form)
+		fmt.Println("No es el password")
+	}
 }
 
 func getAllUsers(ctx context.Context) {
