@@ -8,15 +8,15 @@ import (
 	"github.com/fatih/structtag"
 )
 
-type HandleTag func(i FieldParam)
+type HandleFuncTag func(i FieldParam)
 
 type StructProcessorTag struct {
-	rulesTag map[string]HandleTag
+	rulesTag map[string]HandleFuncTag
 }
 
 func New() (*StructProcessorTag) {
 	sp := &StructProcessorTag{
-		rulesTag: make(map[string]HandleTag, len(defaultTagsRules)),
+		rulesTag: make(map[string]HandleFuncTag, len(defaultTagsRules)),
 	}
 
 	for _key, _fn := range defaultTagsRules {
@@ -26,7 +26,7 @@ func New() (*StructProcessorTag) {
 	return sp
 }
 
-func (this StructProcessorTag) GetHandleRule(_tag string) (HandleTag) {
+func (this StructProcessorTag) GetHandleRule(_tag string) (HandleFuncTag) {
 
 	v, ok := this.rulesTag[_tag]
 
@@ -36,7 +36,7 @@ func (this StructProcessorTag) GetHandleRule(_tag string) (HandleTag) {
 	return nil
 }
 
-func (this *StructProcessorTag) RegisterHandleRule(_tag string, _fn HandleTag) (error) {
+func (this *StructProcessorTag) RegisterHandleRule(_tag string, _fn HandleFuncTag) (error) {
 
 	isTagRestricted := false
 
