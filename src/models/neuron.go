@@ -15,6 +15,19 @@ type Neuron struct {
 	PublicKey string         `json:"public_key"`
 }
 
+func (this Neuron) GetKey() string {
+	return this.Key
+}
+
+func (this Neuron) GetCollection() string {
+	return "neuron"
+}
+
+func (this Neuron) GetError() (string, bool) {
+	return this.Message, this.Error
+}
+
+
 type ActionNeuron struct {
 	Name        string                 `json:"name"`
 	EndPoint    string                 `json:"end_point"`
