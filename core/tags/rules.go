@@ -86,7 +86,7 @@ func RuleOnCreate(f FieldParam) () {
 		{
 
 			if f.GetField().Kind() == reflect.String {
-				bytes, err := bcrypt.GenerateFromPassword([]byte(f.GetField().Value().(string)), 14)
+				bytes, err := bcrypt.GenerateFromPassword([]byte(f.GetField().Value().(string)), 10)
 
 				if err != nil {
 					panic(err)
