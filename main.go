@@ -55,7 +55,7 @@ func main() {
 }
 
 func login(ctx context.Context) {
-	var _form types.UserLogin
+	var _form types.UserCredentials
 	var _user models.UserModel
 
 	err := ctx.ReadJSON(&_form)
