@@ -9,8 +9,6 @@ import (
 	"github.com/go-playground/universal-translator"
 	"gopkg.in/go-playground/validator.v9"
 	en_translations "gopkg.in/go-playground/validator.v9/translations/en"
-
-	"github.com/merakiVE/CVDI/core/types"
 )
 
 var (
@@ -30,7 +28,7 @@ func init() {
 }
 
 type StructValidator struct {
-	MessagesValidation types.JsonArray `json:"messages_validation"`
+	MessagesValidation []map[string]string `json:"messages_validation"`
 	ValidationSuccess  bool `json:"is_valid"`
 }
 
@@ -41,7 +39,7 @@ func CreateValidator() (*StructValidator) {
 func (this *StructValidator) Validate(_struct interface{}) (err error) {
 
 	_errorValidationStruct := validate.Struct(_struct)
-	_messages := make(types.JsonArray, 0)
+	_messages := make([]map[string]string, 0)
 	this.ValidationSuccess = false
 
 	if _errorValidationStruct != nil {
@@ -52,7 +50,7 @@ func (this *StructValidator) Validate(_struct interface{}) (err error) {
 
 		for _, err := range _errorValidationStruct.(validator.ValidationErrors) {
 
-			_messages = append(_messages, types.JsonObject{
+			_messages = append(_messages, map[string]string{
 				strings.ToLower(err.Field()): err.Translate(translate),
 			})
 		}
@@ -66,7 +64,7 @@ func (this *StructValidator) Validate(_struct interface{}) (err error) {
 	return _errorValidationStruct
 }
 
-func (this StructValidator) GetMessagesValidation() (types.JsonArray) {
+func (this StructValidator) GetMessagesValidation() ([]map[string]string) {
 	return this.MessagesValidation
 }
 
