@@ -32,7 +32,7 @@ type StructValidator struct {
 	ValidationSuccess  bool `json:"is_valid"`
 }
 
-func CreateValidator() (*StructValidator) {
+func New() (*StructValidator) {
 	return &StructValidator{}
 }
 
