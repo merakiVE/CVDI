@@ -22,8 +22,8 @@ import (
 const (
 	PORT_SERVER = ":8101"
 
-	privateKeyPath = "keys/private.pem"
-	publicKeyPath  = "keys/public.pem"
+	PRIVATE_KEY_PATH = "keys/private.pem"
+	PUBLIC_KEY_PATH  = "keys/public.pem"
 )
 
 var (
@@ -33,13 +33,13 @@ var (
 func initKeys() {
 	var err error
 
-	SecrectKey, err = ioutil.ReadFile(privateKeyPath)
+	SecrectKey, err = ioutil.ReadFile(PRIVATE_KEY_PATH)
 	if err != nil {
 		log.Fatal("Error reading private key")
 		return
 	}
 
-	PublicKey, err = ioutil.ReadFile(publicKeyPath)
+	PublicKey, err = ioutil.ReadFile(PUBLIC_KEY_PATH)
 	if err != nil {
 		log.Fatal("Error reading public key")
 		return
