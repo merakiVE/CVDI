@@ -2,6 +2,7 @@ package auth
 
 import (
 	"github.com/dgrijalva/jwt-go"
+	"time"
 )
 
 func CreateTokenJWT(_data map[string]interface{}, _secretKey interface{}) ([]byte) {
@@ -16,7 +17,7 @@ func CreateTokenJWT(_data map[string]interface{}, _secretKey interface{}) ([]byt
 	for _key, _value := range _data {
 		claims[_key] = _value
 	}
-	//claims["exp"] = time.Now().Add(time.Hour * 24).Unix()
+	claims["exp"] = time.Now().Add(time.Hour * 24).Unix()
 
 	/* Sign the token with our secret */
 	tokenString, _ := token.SignedString(_secretKey)
