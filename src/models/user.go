@@ -6,6 +6,8 @@ import (
 	arangoDB "github.com/hostelix/aranGO"
 
 	"github.com/merakiVE/CVDI/core/types"
+	"github.com/merakiVE/CVDI/core/validator"
+	"github.com/merakiVE/CVDI/core/tags"
 )
 
 type UserModel struct {
@@ -18,6 +20,7 @@ type UserModel struct {
 	LastLogin time.Time `json:"last_login"`
 
 	types.Timestamps
+	ErrorsValidation []map[string]string `json:"errors_validation,omitempty"`
 }
 
 func (this UserModel) GetKey() string {
@@ -30,4 +33,27 @@ func (this UserModel) GetCollection() string {
 
 func (this UserModel) GetError() (string, bool) {
 	return this.Message, this.Error
+}
+
+func (this UserModel) GetValidationErrors() ([]map[string]string) {
+	return this.ErrorsValidation
+}
+
+func (this *UserModel) PreSave(c *arangoDB.Context) {
+
+	v := validator.New()
+
+	v.Validate(this)
+
+	if v.IsValid() {
+
+		//Tag Process for model
+		tags.New().ProcessTags(this)
+	} else {
+
+		c.Err["error_validation"] = "Error validating model"
+		this.ErrorsValidation = v.GetMessagesValidation()
+	}
+
+	return
 }
