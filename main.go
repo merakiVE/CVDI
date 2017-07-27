@@ -1,6 +1,10 @@
 package main
 
 import (
+	"fmt"
+	"io/ioutil"
+	"log"
+
 	"github.com/kataras/iris"
 	"github.com/kataras/iris/context"
 	"github.com/kataras/iris/middleware/logger"
@@ -11,23 +15,40 @@ import (
 	"github.com/merakiVE/CVDI/core/types"
 	"github.com/merakiVE/CVDI/core/validator"
 	"github.com/merakiVE/CVDI/core/tags"
-	"github.com/merakiVE/CVDI/src/models"
 	"github.com/merakiVE/CVDI/core/auth"
-	"fmt"
+	"github.com/merakiVE/CVDI/src/models"
 )
 
 const (
 	PORT_SERVER = ":8101"
-	// Secrect key testing
-	PRIVATE_KEY = `AAAAB3NzaC1yc2EAAAABIwAAAQEAklOUpkDHrfHY17SbrmTIpNLTGK9Tjom/BWDSU
-					GPl+nafzlHDTYW7hdI4yZ5ew18JH4JW9jbhUFrviQzM7xlELEVf4h9lFX5QVkbPppSwg0cda3
-					Pbv7kOdJ/MTyBlWXFCR+HAo3FXRitBqxiX1nKhXpHAZsMciLq8V6RjsNAQwdsdMFvSlVK/7XA
-					t3FaoJoAsncM1Q9x5+3V0Ww68/eIFmb1zuUFljQJKprrX88XypNDvjYNby6vw/Pb0rwert/En
-					mZ+AW4OZPnTPI89ZPmVMLuayrD2cE86Z/il8b+gw3r3+1nKatmIkjn2so1d01QraTlMqVSsbx
-					NrRFi9wrf+M7Q==`
+
+	privateKeyPath = "keys/private.pem"
+	publicKeyPath  = "keys/public.pem"
 )
 
+var (
+	SecrectKey, PublicKey []byte
+)
+
+func initKeys() {
+	var err error
+
+	SecrectKey, err = ioutil.ReadFile(privateKeyPath)
+	if err != nil {
+		log.Fatal("Error reading private key")
+		return
+	}
+
+	PublicKey, err = ioutil.ReadFile(publicKeyPath)
+	if err != nil {
+		log.Fatal("Error reading public key")
+		return
+	}
+}
+
 func main() {
+
+	initKeys()
 
 	///Iris
 	app := iris.New()
@@ -107,7 +128,7 @@ func login(ctx context.Context) {
 
 	if auth.VerifyPassword([]byte(_user.Password), []byte(_form.Password)) {
 
-		_token := auth.CreateTokenJWT(map[string]interface{}{"id": _user.Key, "username": _user.Username}, []byte(PRIVATE_KEY))
+		_token := auth.CreateTokenJWT(map[string]interface{}{"id": _user.Id, "key": _user.Key, "username": _user.Username }, SecrectKey)
 
 		ctx.StatusCode(iris.StatusOK)
 		ctx.JSON(types.ResponseAPI{
