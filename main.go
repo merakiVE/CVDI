@@ -13,8 +13,6 @@ import (
 
 	"github.com/merakiVE/CVDI/core/db"
 	"github.com/merakiVE/CVDI/core/types"
-	"github.com/merakiVE/CVDI/core/validator"
-	"github.com/merakiVE/CVDI/core/tags"
 	"github.com/merakiVE/CVDI/core/auth"
 	"github.com/merakiVE/CVDI/src/models"
 )
@@ -206,39 +204,22 @@ func createUser(ctx context.Context) {
 		return
 	}
 
-	v := validator.CreateValidator()
+	succes := db.SaveModel(db.GetDatabase("meraki"), &_user)
 
-	v.Validate(&_user)
+	if succes {
+		ctx.StatusCode(iris.StatusOK)
+		ctx.JSON(types.ResponseAPI{
+			Message: "User created successfully",
+			Data:    nil,
+			Errors:  nil,
+		})
 
-	if v.IsValid() {
-
-		a := tags.New()
-		a.ProcessTags(&_user)
-
-		db.Save(db.GetDatabase("meraki"), _user)
-
-		if err != nil {
-
-			ctx.StatusCode(iris.StatusInternalServerError)
-			ctx.JSON(types.ResponseAPI{
-				Message: "Error creating user",
-				Data:    nil,
-				Errors:  nil,
-			})
-		} else {
-			ctx.StatusCode(iris.StatusOK)
-			ctx.JSON(types.ResponseAPI{
-				Message: "User created successfully",
-				Data:    nil,
-				Errors:  nil,
-			})
-		}
 	} else {
 		ctx.StatusCode(iris.StatusOK)
 		ctx.JSON(types.ResponseAPI{
 			Message: "Error creating user, invalid data",
 			Data:    nil,
-			Errors:  v.GetMessagesValidation(),
+			Errors:  _user.GetValidationErrors(),
 		})
 	}
 
