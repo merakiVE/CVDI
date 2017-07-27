@@ -18,6 +18,13 @@ import (
 
 const (
 	PORT_SERVER = ":8101"
+	// Secrect key testing
+	PRIVATE_KEY = `AAAAB3NzaC1yc2EAAAABIwAAAQEAklOUpkDHrfHY17SbrmTIpNLTGK9Tjom/BWDSU
+					GPl+nafzlHDTYW7hdI4yZ5ew18JH4JW9jbhUFrviQzM7xlELEVf4h9lFX5QVkbPppSwg0cda3
+					Pbv7kOdJ/MTyBlWXFCR+HAo3FXRitBqxiX1nKhXpHAZsMciLq8V6RjsNAQwdsdMFvSlVK/7XA
+					t3FaoJoAsncM1Q9x5+3V0Ww68/eIFmb1zuUFljQJKprrX88XypNDvjYNby6vw/Pb0rwert/En
+					mZ+AW4OZPnTPI89ZPmVMLuayrD2cE86Z/il8b+gw3r3+1nKatmIkjn2so1d01QraTlMqVSsbx
+					NrRFi9wrf+M7Q==`
 )
 
 func main() {
@@ -62,7 +69,7 @@ func login(ctx context.Context) {
 
 	if err != nil {
 
-		ctx.StatusCode(iris.StatusInternalServerError)
+		ctx.StatusCode(iris.StatusBadRequest)
 		ctx.JSON(types.ResponseAPI{
 			Message: "Invalid data user",
 			Data:    nil,
@@ -71,7 +78,7 @@ func login(ctx context.Context) {
 		return
 	}
 
-	sq := fmt.Sprintf("FOR user in users FILTER user.username == '%s' RETURN user", _form.Username)
+	sq := fmt.Sprintf("FOR user IN users FILTER user.username == '%s' RETURN user", _form.Username)
 
 	q := arangoDB.NewQuery(sq)
 	cur, err := db.GetDatabase("meraki").Execute(q)
@@ -87,17 +94,35 @@ func login(ctx context.Context) {
 		return
 	}
 
-	_err := cur.FetchOne(&_user)
+	if !cur.FetchOne(&_user) {
 
-	if !_err {
-		fmt.Println("Error get user")
+		ctx.StatusCode(iris.StatusInternalServerError)
+		ctx.JSON(types.ResponseAPI{
+			Message: "Error for get data user",
+			Data:    nil,
+			Errors:  nil,
+		})
+		return
 	}
 
 	if auth.VerifyPassword([]byte(_user.Password), []byte(_form.Password)) {
-		fmt.Println("Es el password del usuario")
+
+		_token := auth.CreateTokenJWT(map[string]interface{}{"id": _user.Key, "username": _user.Username}, []byte(PRIVATE_KEY))
+
+		ctx.StatusCode(iris.StatusOK)
+		ctx.JSON(types.ResponseAPI{
+			Message: "Login success",
+			Data: types.JsonObject{
+				"token": _token,
+			},
+			Errors: nil,
+		})
+		return
+
 	} else {
-		fmt.Println(_form)
-		fmt.Println("No es el password")
+
+		ctx.StatusCode(iris.StatusForbidden)
+		return
 	}
 }
 
