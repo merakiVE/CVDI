@@ -18,7 +18,16 @@ func (this UserController) List(_context context.Context) {
 	result := make([]models.UserModel, 0)
 	var err error
 
-	q := arangoDB.NewQuery("FOR i in users RETURN i")
+	q := arangoDB.NewQuery(`
+		FOR user in users
+		RETURN {
+			"_key": user._key,
+			"_id": user._id,
+			"_rev": user._rev,
+			"username": user._username,
+			"email": user.email
+		}
+	`)
 	cur, err := db.GetDatabase("meraki").Execute(q)
 
 	if err != nil {
