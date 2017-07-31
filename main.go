@@ -59,6 +59,7 @@ func main() {
 	//Init Controllers
 	cAuth := controllers.AuthController{}
 	cUser := controllers.UserController{}
+	cNeuron := controllers.NeuronController{}
 
 	routerUsers := app.Party("/users")
 	{
@@ -74,7 +75,7 @@ func main() {
 	routerNeuron := app.Party("/neuron")
 	{
 		routerNeuron.Get("/")
-		routerNeuron.Post("/subscription")
+		routerNeuron.Post("/subscription", cNeuron.Subscribe)
 	}
 
 	app.Run(iris.Addr(PORT_SERVER), iris.WithCharset("UTF-8"))
