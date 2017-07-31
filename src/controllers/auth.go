@@ -10,9 +10,9 @@ import (
 	"github.com/merakiVE/CVDI/core/db"
 	"github.com/merakiVE/CVDI/core/auth"
 	"github.com/merakiVE/CVDI/core/types"
+	"github.com/merakiVE/CVDI/core/utils"
 
 	"fmt"
-	"github.com/merakiVE/CVDI/core/utils"
 	"log"
 )
 
