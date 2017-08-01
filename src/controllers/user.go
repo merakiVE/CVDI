@@ -8,10 +8,13 @@ import (
 
 	"github.com/kataras/iris/context"
 
-	arangoDB"github.com/hostelix/aranGO"
+	arangoDB "github.com/hostelix/aranGO"
+	"github.com/spf13/viper"
 )
 
-type UserController struct{}
+type UserController struct {
+	Configuration *viper.Viper
+}
 
 func (this UserController) List(_context context.Context) {
 
@@ -24,11 +27,11 @@ func (this UserController) List(_context context.Context) {
 			"_key": user._key,
 			"_id": user._id,
 			"_rev": user._rev,
-			"username": user._username,
+			"username": user.username,
 			"email": user.email
 		}
 	`)
-	cur, err := db.GetDatabase("meraki").Execute(q)
+	cur, err := db.GetDatabase(this.Configuration.GetString("DATABASE.DB_NAME")).Execute(q)
 
 	if err != nil {
 
@@ -81,9 +84,9 @@ func (this UserController) Create(_context context.Context) {
 		return
 	}
 
-	succes := db.SaveModel(db.GetDatabase("meraki"), &_user)
+	success := db.SaveModel(db.GetDatabase(this.Configuration.GetString("DATABASE.DB_NAME")), &_user)
 
-	if succes {
+	if success {
 		_context.StatusCode(iris.StatusOK)
 		_context.JSON(types.ResponseAPI{
 			Message: "User created successfully",
