@@ -13,11 +13,11 @@ import (
 type UserModel struct {
 	arangoDB.Document
 
-	Username  string    `json:"username" validate:"required"`
-	Email     string    `json:"email" validate:"required,email"`
-	Password  string    `json:"password" validate:"required" on_create:"make_password"`
-	Token     string    `json:"token"`
-	LastLogin time.Time `json:"last_login"`
+	Username  string    `json:"username,omitempty" validate:"required"`
+	Email     string    `json:"email,omitempty" validate:"required,email"`
+	Password  string    `json:"password,omitempty" validate:"required" on_create:"make_password"`
+	Token     string    `json:"token,omitempty"`
+	LastLogin time.Time `json:"last_login,omitempty"`
 
 	types.Timestamps
 	ErrorsValidation []map[string]string `json:"errors_validation,omitempty"`
