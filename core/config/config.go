@@ -1,10 +1,11 @@
 package config
 
 import (
-  "bytes"
-  
-  "github.com/spf13/viper"
-  "github.com/merakiVE/CVDI/core/utils"
+	"bytes"
+	"log"
+
+	"github.com/spf13/viper"
+	"github.com/merakiVE/CVDI/core/utils"
 )
 
 const (
@@ -15,8 +16,8 @@ func init() {
 	viper.SetConfigType("json")
 }
 
-func Load() (){
-	
+func Load() () {
+
 	data, err := utils.ReadBinaryFile(PATH_CONFIG)
 
 	if err != nil {
@@ -31,6 +32,6 @@ func Get(_key string) (interface{}) {
 	return viper.Get(_key)
 }
 
-func GetString(_key string) (interface{}) {
+func GetString(_key string) (string) {
 	return viper.GetString(_key)
 }
