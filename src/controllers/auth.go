@@ -1,6 +1,9 @@
 package controllers
 
 import (
+	"fmt"
+	"log"
+
 	"github.com/kataras/iris/context"
 	"github.com/kataras/iris"
 
@@ -11,9 +14,7 @@ import (
 	"github.com/merakiVE/CVDI/core/auth"
 	"github.com/merakiVE/CVDI/core/types"
 	"github.com/merakiVE/CVDI/core/utils"
-
-	"fmt"
-	"log"
+	"github.com/merakiVE/CVDI/core/config"
 )
 
 type AuthController struct{}
@@ -65,8 +66,11 @@ func (this AuthController) Login(_context context.Context) {
 
 	if auth.VerifyPassword([]byte(_user.Password), []byte(_form.Password)) {
 
+		//Load configuration file
+		config.Load()
+
 		//Read Private Key
-		_secret, err := utils.ReadSecrectKey()
+		_secret, err := utils.ReadBinaryFile(config.GetString("PRIVATE_KEY_PATH"))
 		if err != nil {
 			log.Fatal("Error reading private key")
 			return
