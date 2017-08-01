@@ -2,16 +2,64 @@ package controllers
 
 import (
 	"github.com/kataras/iris/context"
-	"github.com/merakiVE/CVDI/src/models"
 	"github.com/kataras/iris"
+
+	"github.com/merakiVE/CVDI/src/models"
 	"github.com/merakiVE/CVDI/core/db"
 	"github.com/merakiVE/CVDI/core/types"
+
 	"github.com/spf13/viper"
+
+	arangoDB "github.com/hostelix/aranGO"
 )
 
 type NeuronController struct {
 	Configuration *viper.Viper
 }
+
+func (this NeuronController) List(_context context.Context) {
+
+	result := make([]models.NeuronModel, 0)
+	var err error
+
+	q := arangoDB.NewQuery(`
+		FOR neuron in neurons
+		RETURN neuron
+	`)
+	cur, err := db.GetDatabase(this.Configuration.GetString("DATABASE.DB_NAME")).Execute(q)
+
+	if err != nil {
+
+		_context.StatusCode(iris.StatusInternalServerError)
+		_context.JSON(types.ResponseAPI{
+			Message: "Fail",
+			Data:    nil,
+			Errors:  nil,
+		})
+		return
+	}
+
+	err = cur.FetchBatch(&result)
+
+	if err != nil {
+
+		_context.StatusCode(iris.StatusInternalServerError)
+		_context.JSON(types.ResponseAPI{
+			Message: "Fail",
+			Data:    nil,
+			Errors:  nil,
+		})
+		return
+	}
+
+	_context.StatusCode(iris.StatusOK)
+	_context.JSON(types.ResponseAPI{
+		Message: "Success",
+		Data:    result,
+		Errors:  nil,
+	})
+}
+
 
 func (this NeuronController) Subscribe(_context context.Context) {
 	var _neuron models.NeuronModel
