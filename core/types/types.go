@@ -10,16 +10,8 @@ type JsonObject map[string]interface{}
 type JsonArray []JsonObject
 
 type Timestamps struct {
-	CreatedAt time.Time `json:"created_at,omitempty" on_create:"set,auto_now"`
-	UpdatedAt time.Time `json:"updated_at,omitempty"`
-}
-
-func (this *Timestamps) AutoNowCreate() {
-	this.CreatedAt = time.Now()
-}
-
-func (this *Timestamps) AutoNowUpdate() {
-	this.UpdatedAt = time.Now()
+	CreatedAt *time.Time `json:"created_at,omitempty" on_create:"set,auto_now"`
+	UpdatedAt *time.Time `json:"updated_at,omitempty"`
 }
 
 type ResponseAPI struct {
