@@ -6,9 +6,12 @@ import (
 	"github.com/kataras/iris"
 	"github.com/merakiVE/CVDI/core/db"
 	"github.com/merakiVE/CVDI/core/types"
+	"github.com/spf13/viper"
 )
 
-type NeuronController struct{}
+type NeuronController struct {
+	Configuration *viper.Viper
+}
 
 func (this NeuronController) Subscribe(_context context.Context) {
 	var _neuron models.NeuronModel
@@ -28,7 +31,7 @@ func (this NeuronController) Subscribe(_context context.Context) {
 		return
 	}
 
-	success := db.SaveModel(db.GetDatabase("meraki"), &_neuron)
+	success := db.SaveModel(db.GetDatabase(this.Configuration.GetString("DATABASE.DB_NAME")), &_neuron)
 
 	if success {
 		_context.StatusCode(iris.StatusOK)
