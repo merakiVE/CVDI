@@ -3,13 +3,20 @@ package db
 import (
 	arangoDB "github.com/hostelix/aranGO"
 	"reflect"
+	"github.com/merakiVE/CVDI/core/config"
 )
 
-const (
-	DBHOST     = "http://localhost:8529"
-	DBUSER     = "root"
-	DBPASSWORD = "canaima"
-)
+
+func init() {
+	config.Load()
+	
+	var (
+		DBHOST     = config.GetString("DATABASE.DB_HOST") + ":" + config.GetString("DATABASE.DB_PORT") 
+		DBUSER     = config.GetString("DATABASE.DB_USER")
+		DBPASSWORD = config.GetString("DATABASE.DB_PASSWORD")
+	)
+}
+
 
 func GetSessionDB() *arangoDB.Session {
 

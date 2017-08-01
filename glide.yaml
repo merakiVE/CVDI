@@ -10,6 +10,7 @@ import:
   subpackages:
   - context
   - middleware/logger
+- package: github.com/spf13/viper
 - package: gopkg.in/go-playground/validator.v9
   subpackages:
   - translations/en
