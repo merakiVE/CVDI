@@ -1,42 +1,18 @@
 package main
 
 import (
-	"log"
-
 	"github.com/kataras/iris"
 	"github.com/kataras/iris/middleware/logger"
 
 	"github.com/merakiVE/CVDI/src/controllers"
-	"github.com/merakiVE/CVDI/core/utils"
+	"github.com/merakiVE/CVDI/core/config"
 )
 
 const (
 	PORT_SERVER = ":8101"
 )
 
-var (
-	SecrectKey, PublicKey []byte
-)
-
-func initKeys() {
-	var err error
-
-	SecrectKey, err = utils.ReadSecrectKey()
-	if err != nil {
-		log.Fatal("Error reading private key")
-		return
-	}
-
-	PublicKey, err = utils.ReadPublicKey()
-	if err != nil {
-		log.Fatal("Error reading public key")
-		return
-	}
-}
-
 func main() {
-
-	initKeys()
 
 	///Iris
 	app := iris.New()
@@ -54,12 +30,15 @@ func main() {
 		Path: true,
 	})
 
+	//Load configuration
+	config.Load()
+
 	app.Use(APILogger)
 
 	//Init Controllers
-	cAuth := controllers.AuthController{}
-	cUser := controllers.UserController{}
-	cNeuron := controllers.NeuronController{}
+	cAuth := controllers.AuthController{Configuration: config.GetConfig() }
+	cUser := controllers.UserController{Configuration: config.GetConfig() }
+	cNeuron := controllers.NeuronController{Configuration: config.GetConfig() }
 
 	routerUsers := app.Party("/users")
 	{
@@ -74,7 +53,7 @@ func main() {
 
 	routerNeuron := app.Party("/neuron")
 	{
-		routerNeuron.Get("/")
+		routerNeuron.Get("/", cNeuron.List)
 		routerNeuron.Post("/subscription", cNeuron.Subscribe)
 	}
 
