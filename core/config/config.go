@@ -35,3 +35,7 @@ func Get(_key string) (interface{}) {
 func GetString(_key string) (string) {
 	return viper.GetString(_key)
 }
+
+func GetConfig() (*viper.Viper) {
+	return viper.GetViper()
+}
