@@ -6,17 +6,16 @@ import (
 	"github.com/merakiVE/CVDI/core/config"
 )
 
+var DBHOST, DBUSER, DBPASSWORD string
 
 func init() {
 	config.Load()
-	
-	var (
-		DBHOST     = config.GetString("DATABASE.DB_HOST") + ":" + config.GetString("DATABASE.DB_PORT") 
-		DBUSER     = config.GetString("DATABASE.DB_USER")
-		DBPASSWORD = config.GetString("DATABASE.DB_PASSWORD")
-	)
-}
 
+	DBHOST = config.GetString("DATABASE.DB_HOST") + ":" + config.GetString("DATABASE.DB_PORT")
+	DBUSER = config.GetString("DATABASE.DB_USER")
+	DBPASSWORD = config.GetString("DATABASE.DB_PASSWORD")
+
+}
 
 func GetSessionDB() *arangoDB.Session {
 
