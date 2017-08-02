@@ -1,19 +1,26 @@
 package db
 
 import (
-	arangoDB "github.com/hostelix/aranGO"
 	"reflect"
+
+	arangoDB "github.com/hostelix/aranGO"
+
 	"github.com/merakiVE/CVDI/core/config"
 )
 
 var DBHOST, DBUSER, DBPASSWORD string
 
-func init() {
-	config.Load()
+var configGlobal config.Configuration
 
-	DBHOST = config.GetString("DATABASE.DB_HOST") + ":" + config.GetString("DATABASE.DB_PORT")
-	DBUSER = config.GetString("DATABASE.DB_USER")
-	DBPASSWORD = config.GetString("DATABASE.DB_PASSWORD")
+func init() {
+
+	configGlobal = config.Configuration{}
+
+	configGlobal.Load()
+
+	DBHOST = configGlobal.GetString("DATABASE.DB_HOST") + ":" + configGlobal.GetString("DATABASE.DB_PORT")
+	DBUSER = configGlobal.GetString("DATABASE.DB_USER")
+	DBPASSWORD = configGlobal.GetString("DATABASE.DB_PASSWORD")
 
 }
 
