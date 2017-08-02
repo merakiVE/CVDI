@@ -12,11 +12,16 @@ const (
 	PATH_CONFIG = "cvdi.conf"
 )
 
+type Configuration struct {
+	instanceConfig *viper.Viper
+	hasLoaded      bool
+}
+
 func init() {
 	viper.SetConfigType("json")
 }
 
-func Load() () {
+func (this *Configuration) Load() () {
 
 	data, err := utils.ReadBinaryFile(PATH_CONFIG)
 
@@ -25,17 +30,19 @@ func Load() () {
 		return
 	}
 
+	this.hasLoaded = true
+
 	viper.ReadConfig(bytes.NewBuffer(data))
 }
 
-func Get(_key string) (interface{}) {
+func (this *Configuration) Get(_key string) (interface{}) {
 	return viper.Get(_key)
 }
 
-func GetString(_key string) (string) {
+func (this *Configuration) GetString(_key string) (string) {
 	return viper.GetString(_key)
 }
 
-func GetConfig() (*viper.Viper) {
-	return viper.GetViper()
+func (this *Configuration) GetNativeConfig() (*viper.Viper) {
+	return this.instanceConfig
 }
