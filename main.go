@@ -5,7 +5,8 @@ import (
 	"github.com/kataras/iris/middleware/logger"
 
 	"github.com/merakiVE/CVDI/src/controllers"
-	"github.com/merakiVE/CVDI/core/config"
+	packageConfig "github.com/merakiVE/CVDI/core/config"
+	"github.com/merakiVE/CVDI/core"
 )
 
 const (
@@ -16,6 +17,9 @@ func main() {
 
 	///Iris
 	app := iris.New()
+
+	// Init Configuration var
+	config := packageConfig.Configuration{}
 
 	//app.Configure(iris.WithConfiguration(iris.YAML("./config_iris.yml")))
 
@@ -30,16 +34,20 @@ func main() {
 		Path: true,
 	})
 
+	app.Use(APILogger)
+
 	//Load configuration
 	config.Load()
 
-	app.Use(APILogger)
+	//Context Controller
+	contextController := core.ContextController{Config: config }
 
 	//Init Controllers
-	cAuth := controllers.AuthController{Configuration: config.GetConfig() }
-	cUser := controllers.UserController{Configuration: config.GetConfig() }
-	cNeuron := controllers.NeuronController{Configuration: config.GetConfig() }
+	cAuth := controllers.NewAuthController(contextController)
+	cUser := controllers.NewUserController(contextController)
+	cNeuron := controllers.NewNeuronController(contextController)
 
+	//Routers
 	routerUsers := app.Party("/users")
 	{
 		routerUsers.Get("/", cUser.List)
