@@ -10,15 +10,27 @@ import (
 	arangoDB "github.com/hostelix/aranGO"
 
 	"github.com/merakiVE/CVDI/src/models"
+	
+	"github.com/merakiVE/CVDI/core"
 	"github.com/merakiVE/CVDI/core/db"
 	"github.com/merakiVE/CVDI/core/auth"
 	"github.com/merakiVE/CVDI/core/types"
 	"github.com/merakiVE/CVDI/core/utils"
-	"github.com/spf13/viper"
 )
 
 type AuthController struct {
-	Configuration *viper.Viper
+	context core.ContextController
+}
+
+func NewAuthController(cc core.ContextController) (AuthController) {
+	controller := AuthController{}
+	controller.SetContext(cc)
+
+	return controller
+}
+
+func (this *AuthController) SetContext(cc core.ContextController) {
+	this.context = cc
 }
 
 func (this AuthController) Login(_context context.Context) {
@@ -42,7 +54,7 @@ func (this AuthController) Login(_context context.Context) {
 	sq := fmt.Sprintf("FOR user IN users FILTER user.username == '%s' RETURN user", _form.Username)
 
 	q := arangoDB.NewQuery(sq)
-	cur, err := db.GetDatabase(this.Configuration.GetString("DATABASE.DB_NAME")).Execute(q)
+	cur, err := db.GetDatabase(this.context.Config.GetString("DATABASE.DB_NAME")).Execute(q)
 
 	if err != nil {
 
@@ -69,7 +81,7 @@ func (this AuthController) Login(_context context.Context) {
 	if auth.VerifyPassword([]byte(_user.Password), []byte(_form.Password)) {
 
 		//Read Private Key
-		_secret, err := utils.ReadBinaryFile(this.Configuration.GetString("PRIVATE_KEY_PATH"))
+		_secret, err := utils.ReadBinaryFile(this.context.Config.GetString("PRIVATE_KEY_PATH"))
 		if err != nil {
 			log.Fatal("Error reading private key")
 			return
