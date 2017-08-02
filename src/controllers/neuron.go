@@ -7,14 +7,25 @@ import (
 	"github.com/merakiVE/CVDI/src/models"
 	"github.com/merakiVE/CVDI/core/db"
 	"github.com/merakiVE/CVDI/core/types"
-
-	"github.com/spf13/viper"
+	"github.com/merakiVE/CVDI/core"
 
 	arangoDB "github.com/hostelix/aranGO"
+
 )
 
 type NeuronController struct {
-	Configuration *viper.Viper
+	context core.ContextController
+}
+
+func NewNeuronController(cc core.ContextController) (NeuronController) {
+	controller := NeuronController{}
+	controller.SetContext(cc)
+
+	return controller
+}
+
+func (this *NeuronController) SetContext(cc core.ContextController) {
+	this.context = cc
 }
 
 func (this NeuronController) List(_context context.Context) {
@@ -26,7 +37,7 @@ func (this NeuronController) List(_context context.Context) {
 		FOR neuron in neurons
 		RETURN neuron
 	`)
-	cur, err := db.GetDatabase(this.Configuration.GetString("DATABASE.DB_NAME")).Execute(q)
+	cur, err := db.GetDatabase(this.context.Config.GetString("DATABASE.DB_NAME")).Execute(q)
 
 	if err != nil {
 
@@ -79,7 +90,7 @@ func (this NeuronController) Subscribe(_context context.Context) {
 		return
 	}
 
-	success := db.SaveModel(db.GetDatabase(this.Configuration.GetString("DATABASE.DB_NAME")), &_neuron)
+	success := db.SaveModel(db.GetDatabase(this.context.Config.GetString("DATABASE.DB_NAME")), &_neuron)
 
 	if success {
 		_context.StatusCode(iris.StatusOK)

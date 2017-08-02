@@ -2,18 +2,29 @@ package controllers
 
 import (
 	"github.com/kataras/iris"
-	"github.com/merakiVE/CVDI/core/db"
-	"github.com/merakiVE/CVDI/core/types"
-	"github.com/merakiVE/CVDI/src/models"
-
 	"github.com/kataras/iris/context"
 
+	"github.com/merakiVE/CVDI/core/db"
+	"github.com/merakiVE/CVDI/core/types"
+	"github.com/merakiVE/CVDI/core"
+	"github.com/merakiVE/CVDI/src/models"
+
 	arangoDB "github.com/hostelix/aranGO"
-	"github.com/spf13/viper"
 )
 
 type UserController struct {
-	Configuration *viper.Viper
+	context core.ContextController
+}
+
+func NewUserController(cc core.ContextController) (UserController) {
+	controller := UserController{}
+	controller.SetContext(cc)
+
+	return controller
+}
+
+func (this *UserController) SetContext(cc core.ContextController) {
+	this.context = cc
 }
 
 func (this UserController) List(_context context.Context) {
@@ -31,7 +42,7 @@ func (this UserController) List(_context context.Context) {
 			"email": user.email
 		}
 	`)
-	cur, err := db.GetDatabase(this.Configuration.GetString("DATABASE.DB_NAME")).Execute(q)
+	cur, err := db.GetDatabase(this.context.Config.GetString("DATABASE.DB_NAME")).Execute(q)
 
 	if err != nil {
 
@@ -84,7 +95,7 @@ func (this UserController) Create(_context context.Context) {
 		return
 	}
 
-	success := db.SaveModel(db.GetDatabase(this.Configuration.GetString("DATABASE.DB_NAME")), &_user)
+	success := db.SaveModel(db.GetDatabase(this.context.Config.GetString("DATABASE.DB_NAME")), &_user)
 
 	if success {
 		_context.StatusCode(iris.StatusOK)
