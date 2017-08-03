@@ -29,6 +29,50 @@ func (this *NeuronController) SetContext(cc core.ContextController) {
 	this.context = cc
 }
 
+func (this NeuronController) Get(_context context.Context) {
+
+	var result models.NeuronModel
+	var err error
+
+	key_neuron := _context.Params().Get("key")
+
+	query := fmt.Sprintf(`FOR neuron IN neurons FILTER neuron._key == '%s' RETURN neuron`, key_neuron)
+
+	q := arangoDB.NewQuery(query)
+
+	cur, err := db.GetDatabase(this.context.Config.GetString("DATABASE.DB_NAME")).Execute(q)
+
+	if err != nil {
+
+		_context.StatusCode(iris.StatusInternalServerError)
+		_context.JSON(types.ResponseAPI{
+			Message: err.Error(),
+			Data:    nil,
+			Errors:  nil,
+		})
+		return
+	}
+	success := cur.FetchOne(&result)
+
+	if !success {
+
+		_context.StatusCode(iris.StatusInternalServerError)
+		_context.JSON(types.ResponseAPI{
+			Message: "Error get actions, key not found",
+			Data:    nil,
+			Errors:  nil,
+		})
+		return
+	}
+
+	_context.StatusCode(iris.StatusOK)
+	_context.JSON(types.ResponseAPI{
+		Message: "Neuron " + key_neuron,
+		Data:    result,
+		Errors:  nil,
+	})
+}
+
 func (this NeuronController) List(_context context.Context) {
 
 	result := make([]models.NeuronModel, 0)
