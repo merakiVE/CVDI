@@ -40,7 +40,7 @@ func main() {
 	config.Load()
 
 	//Context Controller
-	contextController := core.ContextController{Config: config }
+	contextController := core.ContextController{App: app, Config: config}
 
 	//Init Controllers
 	cAuth := controllers.NewAuthController(contextController)
@@ -51,7 +51,7 @@ func main() {
 	routerUsers := app.Party("/users")
 	{
 		routerUsers.Get("/", cUser.List)
-		routerUsers.Post("/create", cUser.Create)
+		routerUsers.Post("/", cUser.Create)
 	}
 
 	routerAdmin := app.Party("/auth")
@@ -59,10 +59,14 @@ func main() {
 		routerAdmin.Post("/login", cAuth.Login)
 	}
 
-	routerNeuron := app.Party("/neuron")
+	routerNeuron := app.Party("/neurons")
 	{
 		routerNeuron.Get("/", cNeuron.List)
+		routerNeuron.Get("/{key:string}", cNeuron.Get)
 		routerNeuron.Post("/subscription", cNeuron.Subscribe)
+
+		//Action Neuron
+		routerNeuron.Get("/{key:string}/actions", cNeuron.Actions)
 	}
 
 	app.Run(iris.Addr(PORT_SERVER), iris.WithCharset("UTF-8"))
