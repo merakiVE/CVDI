@@ -11,6 +11,7 @@ import (
 
 	arangoDB "github.com/hostelix/aranGO"
 
+	"fmt"
 )
 
 type NeuronController struct {
@@ -71,6 +72,49 @@ func (this NeuronController) List(_context context.Context) {
 	})
 }
 
+func (this NeuronController) Actions(_context context.Context) {
+
+	var result models.NeuronModel
+	var err error
+
+	key_neuron := _context.Params().Get("key")
+
+	query := fmt.Sprintf(`FOR neuron IN neurons FILTER neuron._key == '%s' RETURN neuron`, key_neuron)
+
+	q := arangoDB.NewQuery(query)
+
+	cur, err := db.GetDatabase(this.context.Config.GetString("DATABASE.DB_NAME")).Execute(q)
+
+	if err != nil {
+
+		_context.StatusCode(iris.StatusInternalServerError)
+		_context.JSON(types.ResponseAPI{
+			Message: err.Error(),
+			Data:    nil,
+			Errors:  nil,
+		})
+		return
+	}
+	success := cur.FetchOne(&result)
+
+	if !success {
+
+		_context.StatusCode(iris.StatusInternalServerError)
+		_context.JSON(types.ResponseAPI{
+			Message: "Error get actions, key not found",
+			Data:    nil,
+			Errors:  nil,
+		})
+		return
+	}
+
+	_context.StatusCode(iris.StatusOK)
+	_context.JSON(types.ResponseAPI{
+		Message: "List Actions Neuron",
+		Data:    result.Actions,
+		Errors:  nil,
+	})
+}
 
 func (this NeuronController) Subscribe(_context context.Context) {
 	var _neuron models.NeuronModel
@@ -93,7 +137,7 @@ func (this NeuronController) Subscribe(_context context.Context) {
 	success := db.SaveModel(db.GetDatabase(this.context.Config.GetString("DATABASE.DB_NAME")), &_neuron)
 
 	if success {
-		_context.StatusCode(iris.StatusOK)
+		_context.StatusCode(iris.StatusCreated)
 		_context.JSON(types.ResponseAPI{
 			Message: "Neuron subscribe successfully",
 			Data:    nil,
