@@ -56,11 +56,11 @@ func (this NeuronController) Get(_context context.Context) {
 
 	if !success {
 
-		_context.StatusCode(iris.StatusInternalServerError)
+		_context.StatusCode(iris.StatusNotFound)
 		_context.JSON(types.ResponseAPI{
-			Message: "Error get actions, key not found",
+			Message: "Error get neuron, key not found",
 			Data:    nil,
-			Errors:  nil,
+			Errors:  map[string]string{"error": "key not found"},
 		})
 		return
 	}
