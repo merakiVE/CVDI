@@ -10,6 +10,7 @@ import (
 	"fmt"
 	"os"
 	"path"
+	"strings"
 )
 
 func ReadBinaryFile(_path string) ([]byte, error) {
@@ -21,6 +22,10 @@ func Exists(path string) (bool) {
 		return true
 	}
 	return false
+}
+
+func IsEmptyString(str string) (bool) {
+	return len(strings.TrimSpace(str)) == 0
 }
 
 /*
