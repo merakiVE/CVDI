@@ -9,17 +9,25 @@ import (
 	"encoding/pem"
 	"fmt"
 	"os"
+	"path"
 )
 
 func ReadBinaryFile(_path string) ([]byte, error) {
 	return ioutil.ReadFile(_path)
 }
 
+func Exists(path string) (bool) {
+	if _, err := os.Stat(path); err == nil {
+		return true
+	}
+	return false
+}
+
 /*
  * Genarate rsa keys.
  */
 
-func GenerateKeys() {
+func GenerateKeys(path_dir string) {
 	reader := rand.Reader
 	bitSize := 2048
 
@@ -28,11 +36,11 @@ func GenerateKeys() {
 
 	publicKey := key.PublicKey
 
-	saveGobKey("private.key", key)
-	savePEMKey("private.pem", key)
+	SaveGobKey(path.Join(path_dir, "private.key"), key)
+	SavePEMKey(path.Join(path_dir, "private.pem"), key)
 
-	saveGobKey("public.key", publicKey)
-	savePublicPEMKey("public.pem", publicKey)
+	SaveGobKey(path.Join(path_dir, "public.key"), publicKey)
+	SavePublicPEMKey(path.Join(path_dir, "public.pem"), publicKey)
 }
 
 func SaveGobKey(fileName string, key interface{}) {
