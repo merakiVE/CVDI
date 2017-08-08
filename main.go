@@ -9,7 +9,7 @@ import (
 
 func main() {
 	app := cli.NewApp()
-	app.Name = "CVDI CLI"
+	app.Name = "CVDI"
 	app.Version = "1.0.0"
 	app.Compiled = time.Now()
 	app.Authors = []cli.Author{
