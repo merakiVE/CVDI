@@ -55,6 +55,11 @@ Generar llave publica y privada
     openssl genrsa -des3 -out keys/private.pem 2048
     openssl rsa -in keys/private.pem -outform PEM -pubout -out keys/public.pem
 
+Generar llave publica y privada con el CLI
+
+    CVDI generate keys
+    CVDI gen keys
+
 
 ## ¿Cómo puedo contribuir? 
 Solo debes leer el archivo `contributing.md`, que encontraras en [este enlace](https://github.com/merakive/cvdi/blob/master/.github/CONTRIBUTING.md)
