@@ -35,6 +35,10 @@ func GetSessionDB() *arangoDB.Session {
 	return s
 }
 
+func GetCurrentDatabase() *arangoDB.Database {
+	return GetSessionDB().DB(configGlobal.GetString("DATABASE.DB_NAME"))
+}
+
 func GetDatabase(nameDB string) *arangoDB.Database {
 	return GetSessionDB().DB(nameDB)
 }
