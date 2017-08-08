@@ -42,9 +42,9 @@ func init() {
 			ArgsUsage:   "[]",
 			Subcommands: cli.Commands{
 				cli.Command{
-					Name: "keys",
+					Name:        "keys",
 					Description: "Generate public and private keys",
-					UsageText: "CVDI generate keys - CVDI gen keys",
+					UsageText:   "CVDI generate keys - CVDI gen keys",
 					Flags: []cli.Flag{
 						cli.BoolTFlag{
 							Name:  "force, f",
