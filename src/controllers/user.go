@@ -19,8 +19,18 @@ type UserController struct {
 func NewUserController(cc core.ContextController) (UserController) {
 	controller := UserController{}
 	controller.SetContext(cc)
-
+	controller.RegisterRouters()
 	return controller
+}
+
+func (this *UserController) RegisterRouters() {
+
+	app := this.context.App
+
+	//User Routers
+	routerUsers := app.Party("/users")
+	routerUsers.Get("/", this.List)
+	routerUsers.Post("/", this.Create)
 }
 
 func (this *UserController) SetContext(cc core.ContextController) {

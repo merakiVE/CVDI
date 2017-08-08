@@ -21,8 +21,21 @@ type NeuronController struct {
 func NewNeuronController(cc core.ContextController) (NeuronController) {
 	controller := NeuronController{}
 	controller.SetContext(cc)
-
+	controller.RegisterRouters()
 	return controller
+}
+
+func (this *NeuronController) RegisterRouters() {
+	app := this.context.App
+
+	routerNeuron := app.Party("/neurons")
+	{
+		routerNeuron.Get("/", this.List)
+		routerNeuron.Get("/{key:string}", this.Get)
+		routerNeuron.Post("/subscription", this.Subscribe)
+		//Action Neuron
+		routerNeuron.Get("/{key:string}/actions", this.Actions)
+	}
 }
 
 func (this *NeuronController) SetContext(cc core.ContextController) {

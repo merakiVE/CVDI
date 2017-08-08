@@ -10,7 +10,7 @@ import (
 	arangoDB "github.com/hostelix/aranGO"
 
 	"github.com/merakiVE/CVDI/src/models"
-	
+
 	"github.com/merakiVE/CVDI/core"
 	"github.com/merakiVE/CVDI/core/db"
 	"github.com/merakiVE/CVDI/core/auth"
@@ -25,8 +25,18 @@ type AuthController struct {
 func NewAuthController(cc core.ContextController) (AuthController) {
 	controller := AuthController{}
 	controller.SetContext(cc)
+	controller.RegisterRouters()
 
 	return controller
+}
+
+func (this *AuthController) RegisterRouters() {
+	app := this.context.App
+
+	routerAdmin := app.Party("/auth")
+	{
+		routerAdmin.Post("/login", this.Login)
+	}
 }
 
 func (this *AuthController) SetContext(cc core.ContextController) {
