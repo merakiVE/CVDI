@@ -12,4 +12,5 @@ type ContextController struct {
 
 type Controller interface {
 	SetContext(ContextController)
+	RegisterRouters()
 }
