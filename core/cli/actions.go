@@ -9,6 +9,7 @@ import (
 	packageConfig "github.com/merakiVE/CVDI/core/config"
 	"github.com/merakiVE/CVDI/core"
 	"strings"
+	//"github.com/kataras/iris/context"
 )
 
 var (
@@ -45,31 +46,9 @@ func RunServer(c *cli.Context) error {
 	contextController := core.ContextController{App: app, Config: config}
 
 	//Init Controllers
-	cAuth := controllers.NewAuthController(contextController)
-	cUser := controllers.NewUserController(contextController)
-	cNeuron := controllers.NewNeuronController(contextController)
-
-	//Routers
-	routerUsers := app.Party("/users")
-	{
-		routerUsers.Get("/", cUser.List)
-		routerUsers.Post("/", cUser.Create)
-	}
-
-	routerAdmin := app.Party("/auth")
-	{
-		routerAdmin.Post("/login", cAuth.Login)
-	}
-
-	routerNeuron := app.Party("/neurons")
-	{
-		routerNeuron.Get("/", cNeuron.List)
-		routerNeuron.Get("/{key:string}", cNeuron.Get)
-		routerNeuron.Post("/subscription", cNeuron.Subscribe)
-
-		//Action Neuron
-		routerNeuron.Get("/{key:string}/actions", cNeuron.Actions)
-	}
+	controllers.NewAuthController(contextController)
+	controllers.NewNeuronController(contextController)
+	controllers.NewUserController(contextController)
 
 	//Verify if pass argument port
 	if c.NArg() > 0 {
