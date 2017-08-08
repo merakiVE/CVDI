@@ -40,7 +40,7 @@ func (this NeuronController) Get(_context context.Context) {
 
 	q := arangoDB.NewQuery(query)
 
-	cur, err := db.GetDatabase(this.context.Config.GetString("DATABASE.DB_NAME")).Execute(q)
+	cur, err := db.GetCurrentDatabase().Execute(q)
 
 	if err != nil {
 
@@ -82,7 +82,7 @@ func (this NeuronController) List(_context context.Context) {
 		FOR neuron in neurons
 		RETURN neuron
 	`)
-	cur, err := db.GetDatabase(this.context.Config.GetString("DATABASE.DB_NAME")).Execute(q)
+	cur, err := db.GetCurrentDatabase().Execute(q)
 
 	if err != nil {
 
@@ -127,7 +127,7 @@ func (this NeuronController) Actions(_context context.Context) {
 
 	q := arangoDB.NewQuery(query)
 
-	cur, err := db.GetDatabase(this.context.Config.GetString("DATABASE.DB_NAME")).Execute(q)
+	cur, err := db.GetCurrentDatabase().Execute(q)
 
 	if err != nil {
 
@@ -178,7 +178,7 @@ func (this NeuronController) Subscribe(_context context.Context) {
 		return
 	}
 
-	success := db.SaveModel(db.GetDatabase(this.context.Config.GetString("DATABASE.DB_NAME")), &_neuron)
+	success := db.SaveModel(db.GetCurrentDatabase(), &_neuron)
 
 	if success {
 		_context.StatusCode(iris.StatusCreated)
