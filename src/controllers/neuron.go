@@ -31,10 +31,11 @@ func (this *NeuronController) RegisterRouters() {
 	routerNeuron := app.Party("/neurons")
 	{
 		routerNeuron.Get("/", this.List)
-		routerNeuron.Get("/{key:string}", this.Get)
+		routerNeuron.Get("/{neuronKey:string}", this.Get)
 		routerNeuron.Post("/subscription", this.Subscribe)
 		//Action Neuron
-		routerNeuron.Get("/{key:string}/actions", this.Actions)
+		routerNeuron.Get("/{neuronKey:string}/actions", this.ListActions)
+		routerNeuron.Post("/{neuronKey:string}/actions", this.CreateAction)
 	}
 }
 
@@ -47,7 +48,7 @@ func (this NeuronController) Get(_context context.Context) {
 	var result models.NeuronModel
 	var err error
 
-	key_neuron := _context.Params().Get("key")
+	key_neuron := _context.Params().Get("neuronKey")
 
 	query := fmt.Sprintf(`FOR neuron IN neurons FILTER neuron._key == '%s' RETURN neuron`, key_neuron)
 
@@ -129,12 +130,12 @@ func (this NeuronController) List(_context context.Context) {
 	})
 }
 
-func (this NeuronController) Actions(_context context.Context) {
+func (this NeuronController) ListActions(_context context.Context) {
 
 	var result models.NeuronModel
 	var err error
 
-	key_neuron := _context.Params().Get("key")
+	key_neuron := _context.Params().Get("neuronKey")
 
 	query := fmt.Sprintf(`FOR neuron IN neurons FILTER neuron._key == '%s' RETURN neuron`, key_neuron)
 
@@ -171,6 +172,58 @@ func (this NeuronController) Actions(_context context.Context) {
 		Data:    result.Actions,
 		Errors:  nil,
 	})
+}
+
+func (this NeuronController) CreateAction(_context context.Context) {
+	var _neuron models.ActionNeuron
+
+	var err error
+
+	err = _context.ReadJSON(&_neuron)
+
+	if err != nil {
+
+		_context.StatusCode(iris.StatusInternalServerError)
+		_context.JSON(types.ResponseAPI{
+			Message: "Invalid data Neuron",
+			Data:    nil,
+			Errors:  nil,
+		})
+		return
+	}
+
+	query := `
+	FOR neuron in neurons
+    	UPDATE neuron WITH {
+          	actions: PUSH(neuron.actions,  {
+              "name": "Consulta bikes modificada",
+              "end_point": "/networks/novara////",
+              "params": null,
+              "method": "GET",
+              "description": "Mostrar informacion de bike"
+            })
+        } IN neurons
+	FILTER neuron._key == '1322662'
+	RETURN neuron`
+
+	success := db.SaveModel(db.GetCurrentDatabase(), &_neuron)
+
+	if success {
+		_context.StatusCode(iris.StatusCreated)
+		_context.JSON(types.ResponseAPI{
+			Message: "Neuron subscribe successfully",
+			Data:    nil,
+			Errors:  nil,
+		})
+
+	} else {
+		_context.StatusCode(iris.StatusOK)
+		_context.JSON(types.ResponseAPI{
+			Message: "Error subscribing neuron, invalid data",
+			Data:    nil,
+			Errors:  _neuron.GetValidationErrors(),
+		})
+	}
 }
 
 func (this NeuronController) Subscribe(_context context.Context) {
