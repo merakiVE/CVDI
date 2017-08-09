@@ -29,15 +29,44 @@ func (this *UserController) RegisterRouters() {
 
 	//User Routers
 	routerUsers := app.Party("/users")
-	routerUsers.Get("/", this.List)
-	routerUsers.Post("/", this.Create)
+	routerUsers.Get("/{userKey:string}", this.GetUser)
+	routerUsers.Get("/", this.ListUsers)
+	routerUsers.Post("/", this.CreateUser)
 }
 
 func (this *UserController) SetContext(cc core.ContextController) {
 	this.context = cc
 }
 
-func (this UserController) List(_context context.Context) {
+func (this UserController) GetUser(_context context.Context) {
+
+	var user models.UserModel
+
+	key_user := _context.Params().Get("userKey")
+
+	user.SetKey(key_user)
+	success := db.GetModel(db.GetCurrentDatabase(), &user)
+
+	if !success {
+
+		_context.StatusCode(iris.StatusNotFound)
+		_context.JSON(types.ResponseAPI{
+			Message: "Error get user, key not found",
+			Data:    nil,
+			Errors:  nil,
+		})
+		return
+	}
+
+	_context.StatusCode(iris.StatusOK)
+	_context.JSON(types.ResponseAPI{
+		Message: "User " + key_user,
+		Data:    user,
+		Errors:  nil,
+	})
+}
+
+func (this UserController) ListUsers(_context context.Context) {
 
 	result := make([]models.UserModel, 0)
 	var err error
@@ -86,7 +115,7 @@ func (this UserController) List(_context context.Context) {
 	})
 }
 
-func (this UserController) Create(_context context.Context) {
+func (this UserController) CreateUser(_context context.Context) {
 
 	var _user models.UserModel
 
