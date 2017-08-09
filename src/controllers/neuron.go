@@ -10,8 +10,6 @@ import (
 	"github.com/merakiVE/CVDI/core"
 
 	arangoDB "github.com/hostelix/aranGO"
-
-	"fmt"
 )
 
 type NeuronController struct {
@@ -30,8 +28,8 @@ func (this *NeuronController) RegisterRouters() {
 
 	routerNeuron := app.Party("/neurons")
 	{
-		routerNeuron.Get("/", this.List)
-		routerNeuron.Get("/{neuronKey:string}", this.Get)
+		routerNeuron.Get("/", this.ListNeurons)
+		routerNeuron.Get("/{neuronKey:string}", this.GetNeuron)
 		routerNeuron.Post("/subscription", this.Subscribe)
 		//Action Neuron
 		routerNeuron.Get("/{neuronKey:string}/actions", this.ListActions)
@@ -43,30 +41,14 @@ func (this *NeuronController) SetContext(cc core.ContextController) {
 	this.context = cc
 }
 
-func (this NeuronController) Get(_context context.Context) {
+func (this NeuronController) GetNeuron(_context context.Context) {
 
-	var result models.NeuronModel
-	var err error
+	var neuron models.NeuronModel
 
 	key_neuron := _context.Params().Get("neuronKey")
 
-	query := fmt.Sprintf(`FOR neuron IN neurons FILTER neuron._key == '%s' RETURN neuron`, key_neuron)
-
-	q := arangoDB.NewQuery(query)
-
-	cur, err := db.GetCurrentDatabase().Execute(q)
-
-	if err != nil {
-
-		_context.StatusCode(iris.StatusInternalServerError)
-		_context.JSON(types.ResponseAPI{
-			Message: err.Error(),
-			Data:    nil,
-			Errors:  nil,
-		})
-		return
-	}
-	success := cur.FetchOne(&result)
+	neuron.SetKey(key_neuron)
+	success := db.GetModel(db.GetCurrentDatabase(), &neuron)
 
 	if !success {
 
@@ -74,7 +56,7 @@ func (this NeuronController) Get(_context context.Context) {
 		_context.JSON(types.ResponseAPI{
 			Message: "Error get neuron, key not found",
 			Data:    nil,
-			Errors:  map[string]string{"error": "key not found"},
+			Errors:  nil,
 		})
 		return
 	}
@@ -82,12 +64,12 @@ func (this NeuronController) Get(_context context.Context) {
 	_context.StatusCode(iris.StatusOK)
 	_context.JSON(types.ResponseAPI{
 		Message: "Neuron " + key_neuron,
-		Data:    result,
+		Data:    neuron.Actions,
 		Errors:  nil,
 	})
 }
 
-func (this NeuronController) List(_context context.Context) {
+func (this NeuronController) ListNeurons(_context context.Context) {
 
 	result := make([]models.NeuronModel, 0)
 	var err error
@@ -132,32 +114,16 @@ func (this NeuronController) List(_context context.Context) {
 
 func (this NeuronController) ListActions(_context context.Context) {
 
-	var result models.NeuronModel
-	var err error
+	var neuron models.NeuronModel
 
 	key_neuron := _context.Params().Get("neuronKey")
 
-	query := fmt.Sprintf(`FOR neuron IN neurons FILTER neuron._key == '%s' RETURN neuron`, key_neuron)
-
-	q := arangoDB.NewQuery(query)
-
-	cur, err := db.GetCurrentDatabase().Execute(q)
-
-	if err != nil {
-
-		_context.StatusCode(iris.StatusInternalServerError)
-		_context.JSON(types.ResponseAPI{
-			Message: err.Error(),
-			Data:    nil,
-			Errors:  nil,
-		})
-		return
-	}
-	success := cur.FetchOne(&result)
+	neuron.SetKey(key_neuron)
+	success := db.GetModel(db.GetCurrentDatabase(), &neuron)
 
 	if !success {
 
-		_context.StatusCode(iris.StatusInternalServerError)
+		_context.StatusCode(iris.StatusNotFound)
 		_context.JSON(types.ResponseAPI{
 			Message: "Error get actions, key not found",
 			Data:    nil,
@@ -169,17 +135,33 @@ func (this NeuronController) ListActions(_context context.Context) {
 	_context.StatusCode(iris.StatusOK)
 	_context.JSON(types.ResponseAPI{
 		Message: "List Actions Neuron",
-		Data:    result.Actions,
+		Data:    neuron.Actions,
 		Errors:  nil,
 	})
 }
 
 func (this NeuronController) CreateAction(_context context.Context) {
-	var _neuron models.ActionNeuron
-
+	var new_action models.ActionNeuron
+	var neuron models.NeuronModel
 	var err error
 
-	err = _context.ReadJSON(&_neuron)
+	key_neuron := _context.Params().Get("neuronKey")
+
+	neuron.SetKey(key_neuron)
+	success := db.GetModel(db.GetCurrentDatabase(), &neuron)
+
+	if !success {
+
+		_context.StatusCode(iris.StatusNotFound)
+		_context.JSON(types.ResponseAPI{
+			Message: "Error get neuron, key not found",
+			Data:    nil,
+			Errors:  nil,
+		})
+		return
+	}
+
+	err = _context.ReadJSON(&new_action)
 
 	if err != nil {
 
@@ -192,38 +174,29 @@ func (this NeuronController) CreateAction(_context context.Context) {
 		return
 	}
 
-	query := `
-	FOR neuron in neurons
-    	UPDATE neuron WITH {
-          	actions: PUSH(neuron.actions,  {
-              "name": "Consulta bikes modificada",
-              "end_point": "/networks/novara////",
-              "params": null,
-              "method": "GET",
-              "description": "Mostrar informacion de bike"
-            })
-        } IN neurons
-	FILTER neuron._key == '1322662'
-	RETURN neuron`
+	//Add new action to Actions model
+	neuron.Actions = append(neuron.Actions, new_action)
 
-	success := db.SaveModel(db.GetCurrentDatabase(), &_neuron)
+	//Update actions model in database
+	success = db.ReplaceModel(db.GetCurrentDatabase(), neuron)
 
-	if success {
-		_context.StatusCode(iris.StatusCreated)
+	if !success {
+
+		_context.StatusCode(iris.StatusInternalServerError)
 		_context.JSON(types.ResponseAPI{
-			Message: "Neuron subscribe successfully",
+			Message: "Error to the add new action to neuron",
 			Data:    nil,
 			Errors:  nil,
 		})
-
-	} else {
-		_context.StatusCode(iris.StatusOK)
-		_context.JSON(types.ResponseAPI{
-			Message: "Error subscribing neuron, invalid data",
-			Data:    nil,
-			Errors:  _neuron.GetValidationErrors(),
-		})
+		return
 	}
+
+	_context.StatusCode(iris.StatusOK)
+	_context.JSON(types.ResponseAPI{
+		Message: "Added new action success",
+		Data:    new_action,
+		Errors:  nil,
+	})
 }
 
 func (this NeuronController) Subscribe(_context context.Context) {
