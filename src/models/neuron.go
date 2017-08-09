@@ -24,7 +24,7 @@ func (this NeuronModel) GetKey() string {
 }
 
 func (this NeuronModel) GetCollection() string {
-	return "neuron"
+	return "neurons"
 }
 
 func (this NeuronModel) GetError() (string, bool) {
