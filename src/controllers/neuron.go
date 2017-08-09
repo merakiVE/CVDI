@@ -64,7 +64,7 @@ func (this NeuronController) GetNeuron(_context context.Context) {
 	_context.StatusCode(iris.StatusOK)
 	_context.JSON(types.ResponseAPI{
 		Message: "Neuron " + key_neuron,
-		Data:    neuron.Actions,
+		Data:    neuron,
 		Errors:  nil,
 	})
 }
