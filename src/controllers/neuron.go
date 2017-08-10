@@ -84,7 +84,7 @@ func (this NeuronController) ListNeurons(_context context.Context) {
 
 		_context.StatusCode(iris.StatusInternalServerError)
 		_context.JSON(types.ResponseAPI{
-			Message: "Fail",
+			Message: "Fail get data from database",
 			Data:    nil,
 			Errors:  nil,
 		})
@@ -94,10 +94,12 @@ func (this NeuronController) ListNeurons(_context context.Context) {
 	err = cur.FetchBatch(&result)
 
 	if err != nil {
+		//Log Error
+		_context.Application().Logger().Error(err.Error())
 
 		_context.StatusCode(iris.StatusInternalServerError)
 		_context.JSON(types.ResponseAPI{
-			Message: "Fail",
+			Message: "Fail unmarshal",
 			Data:    nil,
 			Errors:  nil,
 		})
@@ -207,6 +209,9 @@ func (this NeuronController) Subscribe(_context context.Context) {
 	err = _context.ReadJSON(&_neuron)
 
 	if err != nil {
+
+		//Log error
+		_context.Application().Logger().Error(err.Error())
 
 		_context.StatusCode(iris.StatusInternalServerError)
 		_context.JSON(types.ResponseAPI{
