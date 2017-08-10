@@ -55,7 +55,7 @@ func (this *NeuronModel) PreSave(c *arangoDB.Context) {
 }
 
 type ActionNeuron struct {
-	ID          string                   `json:"id" on_create:"set,auto_uuid"`
+	ID          string                 `json:"id" on_create:"set,auto_uuid"`
 	Name        string                 `json:"name"`
 	EndPoint    string                 `json:"end_point"`
 	Params      map[string]interface{} `json:"params"`
