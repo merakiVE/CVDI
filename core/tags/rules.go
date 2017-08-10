@@ -5,6 +5,7 @@ import (
 	"reflect"
 	"time"
 	"golang.org/x/crypto/bcrypt"
+	"github.com/satori/go.uuid"
 )
 
 type FieldParamStruct struct {
@@ -80,6 +81,16 @@ func RuleOnCreate(f FieldParam) () {
 					f.GetField().Set(time.Now())
 				}
 			}
+
+			if params[0] == "auto_uuid" {
+
+				if f.GetField().Kind() == reflect.String {
+
+					//Generate uuid and set value to field
+					f.GetField().Set(uuid.NewV4())
+				}
+			}
+
 		}
 
 	case "make_password":
