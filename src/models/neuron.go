@@ -9,11 +9,11 @@ import (
 type NeuronModel struct {
 	arangoDB.Document
 
-	ID        string         `json:"id"`
-	Host      string         `json:"host"`
-	Port      int            `json:"port"`
-	Name      string         `json:"name"`
-	Actions   []ActionNeuron `json:"actions"`
+	ID        string         `json:"id" validate:"required"`
+	Host      string         `json:"host" validate:"url,required"`
+	Port      int            `json:"port" validate:"required"`
+	Name      string         `json:"name" validate:"required"`
+	Actions   []ActionNeuron `json:"actions" validate:"required"`
 	PublicKey string         `json:"public_key"`
 
 	ErrorsValidation []map[string]string `json:"errors_validation,omitempty"`
@@ -42,11 +42,9 @@ func (this *NeuronModel) PreSave(c *arangoDB.Context) {
 	v.Validate(this)
 
 	if v.IsValid() {
-
 		//Tag Process for model
 		tags.New().ProcessTags(this)
 	} else {
-
 		c.Err["error_validation"] = "Error validating model"
 		this.ErrorsValidation = v.GetMessagesValidation()
 	}
