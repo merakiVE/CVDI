@@ -8,10 +8,15 @@ import (
 	"github.com/merakiVE/CVDI/core/tags"
 )
 
+type Activity struct {
+	NeuronKey string `json:"neuron_key"`
+}
+
 type ProcedureModel struct {
 	arangoDB.Document
 
-	Owner string    `json:"owner,omitempty" validate:"required"`
+	Owner      string        `json:"owner,omitempty" validate:"required"`
+	Activities []Activity    `json:"activities,omitempty" validate:"required"`
 
 	types.Timestamps
 	ErrorsValidation []map[string]string `json:"errors_validation,omitempty"`
