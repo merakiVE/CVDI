@@ -43,7 +43,14 @@ func (this *NeuronModel) PreSave(c *arangoDB.Context) {
 
 	if v.IsValid() {
 		//Tag Process for model
-		tags.New().ProcessTags(this)
+		t := tags.New()
+
+		t.ProcessTags(this)
+
+		//Process tag to struct slice
+		for i := range this.Actions {
+			t.ProcessTags(&this.Actions[i])
+		}
 	} else {
 		c.Err["error_validation"] = "Error validating model"
 		this.ErrorsValidation = v.GetMessagesValidation()
@@ -56,7 +63,7 @@ type ActionNeuron struct {
 	ID          string                 `json:"id" on_create:"set,auto_uuid"`
 	Name        string                 `json:"name"`
 	EndPoint    string                 `json:"end_point"`
-	Params      map[string]interface{} `json:"params"`
+	Params      map[string]string      `json:"params"`
 	Method      string                 `json:"method"`
 	Description string                 `json:"description"`
 }
