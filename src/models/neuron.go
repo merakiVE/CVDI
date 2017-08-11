@@ -13,7 +13,7 @@ type NeuronModel struct {
 	Host      string         `json:"host" validate:"url,required"`
 	Port      int            `json:"port" validate:"required"`
 	Name      string         `json:"name" validate:"required"`
-	Actions   []ActionNeuron `json:"actions" validate:"required"`
+	Actions   []ActionNeuron `json:"actions" validate:"required,dive,required"`
 	PublicKey string         `json:"public_key"`
 
 	ErrorsValidation []map[string]string `json:"errors_validation,omitempty"`
@@ -61,9 +61,10 @@ func (this *NeuronModel) PreSave(c *arangoDB.Context) {
 
 type ActionNeuron struct {
 	ID          string                 `json:"id" on_create:"set,auto_uuid"`
-	Name        string                 `json:"name"`
-	EndPoint    string                 `json:"end_point"`
+	Name        string                 `json:"name" validate:"required"`
+	EndPoint    string                 `json:"end_point" validate:"required"`
 	Params      map[string]string      `json:"params"`
-	Method      string                 `json:"method"`
-	Description string                 `json:"description"`
+	Method      string                 `json:"method" validate:"required"`
+	Description string                 `json:"description" validate:"required"`
+	Help        string                 `json:"help"`
 }
