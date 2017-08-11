@@ -49,50 +49,57 @@ var (
 	}
 )
 
+/*
+	Regla Default Tag
+	Con esta regla se pueden setear valores por defecto en los campos que se le especifique dicha tag
+	Uso:
+		NameField string `default:"valor por defecto"`
+ */
 func RuleDefault(f FieldParam) () {
-
 	if f.GetAction() == "auto_now" {
 		if f.GetField().Kind() == reflect.ValueOf(time.Time{}).Kind() {
-
 			f.GetField().Set(time.Now())
 		}
 	}
 }
 
+/*
+	Rule que se ejecutan al momento de guardar el registro por primera vez en al db
+ */
 func RuleOnCreate(f FieldParam) () {
 
 	switch f.GetAction() {
 
 	case "execute":
 		{
-
 			// Testing function
 		}
-
 	case "set":
 		{
-
 			params := f.GetParams()
-
+			/*
+				Accion que auto genera un timestamps y lo setea al field
+			 */
 			if params[0] == "auto_now" {
-
 				if f.GetField().Kind() == reflect.ValueOf(time.Time{}).Kind() {
-
 					f.GetField().Set(time.Now())
 				}
 			}
+			/*
+				Accion que auto genera un uuid y lo setea al field
+			 */
 
 			if params[0] == "auto_uuid" {
 
 				if f.GetField().Kind() == reflect.String {
-
 					//Generate uuid and set value to field
-					f.GetField().Set(uuid.NewV4())
+					f.GetField().Set(uuid.NewV4().String())
 				}
 			}
-
 		}
-
+	/*
+		Accion que hashea el password y lo setea
+	 */
 	case "make_password":
 		{
 
