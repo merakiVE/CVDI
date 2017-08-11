@@ -30,6 +30,26 @@ func init() {
 				fmt.Fprintf(c.App.Writer, "Error run server\n")
 				return err
 			},
+			Before: func(c *cli.Context) error {
+				required_db_conf := []string{
+					"DATABASE.DB_HOST",
+					"DATABASE.DB_NAME",
+					"DATABASE.DB_USER",
+					//"DATABASE.DB_PASSWORD",
+					"DATABASE.DB_PORT",
+				}
+
+				for _, key_conf := range required_db_conf {
+
+					value_conf := configGlobal.GetString(key_conf)
+
+					if utils.IsEmptyString(value_conf) {
+						mesag := fmt.Sprintf("Not exist key '%s' in cvdi.conf or the key value is empty", key_conf)
+						return cli.NewExitError(mesag, 11)
+					}
+				}
+				return nil
+			},
 		},
 
 		{
