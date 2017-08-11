@@ -49,9 +49,19 @@ func (this *StructValidator) Validate(_struct interface{}) (err error) {
 		}
 
 		for _, err := range _errorValidationStruct.(validator.ValidationErrors) {
+			//Get structnamespace exmple:
+			// NameStruct.Field => Person.Name
+			// NameStruct.SliceField[0].Field => Person.Hobbies[0].Name
+			struct_name := err.StructNamespace()
+
+			//Split structnamespace
+			//[0] => Name Struct
+			//[1] => Name Field
+			//[3] => Name Field Embeded
+			key_field_error := strings.Join(strings.Split(struct_name, ".")[1:], ".")
 
 			_messages = append(_messages, map[string]string{
-				strings.ToLower(err.Field()): err.Translate(translate),
+				strings.ToLower(key_field_error): err.Translate(translate),
 			})
 		}
 
