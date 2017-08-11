@@ -9,10 +9,11 @@ import (
 type NeuronModel struct {
 	arangoDB.Document
 
-	ID        string         `json:"id" validate:"required"`
-	Host      string         `json:"host" validate:"url,required"`
-	Port      int            `json:"port" validate:"required"`
-	Name      string         `json:"name" validate:"required"`
+	ID   string         `json:"id" validate:"required"`
+	Host string         `json:"host" validate:"url,required"`
+	Port int            `json:"port" validate:"required"`
+	Name string         `json:"name" validate:"required"`
+	// option dive is for validate element to array
 	Actions   []ActionNeuron `json:"actions" validate:"required,dive,required"`
 	PublicKey string         `json:"public_key"`
 
@@ -38,7 +39,6 @@ func (this NeuronModel) GetValidationErrors() ([]map[string]string) {
 func (this *NeuronModel) PreSave(c *arangoDB.Context) {
 
 	v := validator.New()
-
 	v.Validate(this)
 
 	if v.IsValid() {
@@ -67,4 +67,18 @@ type ActionNeuron struct {
 	Method      string                 `json:"method" validate:"required"`
 	Description string                 `json:"description" validate:"required"`
 	Help        string                 `json:"help"`
+}
+
+func (this *ActionNeuron) Validate() []map[string]string {
+
+	v := validator.New()
+	v.Validate(this)
+
+	if !v.IsValid() {
+		return v.GetMessagesValidation()
+	}
+
+	tags.New().ProcessTags(this)
+
+	return nil
 }
