@@ -176,6 +176,19 @@ func (this NeuronController) CreateAction(_context context.Context) {
 		return
 	}
 
+	//Validate action
+	mesg_validation := new_action.Validate()
+
+	if len(mesg_validation) > 0 {
+		_context.StatusCode(iris.StatusInternalServerError)
+		_context.JSON(types.ResponseAPI{
+			Message: "Error to the add new action, invalid data",
+			Data:    nil,
+			Errors:  mesg_validation,
+		})
+		return
+	}
+
 	//Add new action to Actions model
 	neuron.Actions = append(neuron.Actions, new_action)
 
@@ -183,7 +196,6 @@ func (this NeuronController) CreateAction(_context context.Context) {
 	success = db.ReplaceModel(db.GetCurrentDatabase(), neuron)
 
 	if !success {
-
 		_context.StatusCode(iris.StatusInternalServerError)
 		_context.JSON(types.ResponseAPI{
 			Message: "Error to the add new action to neuron",
