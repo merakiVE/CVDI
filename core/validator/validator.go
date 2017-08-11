@@ -49,12 +49,12 @@ func (this *StructValidator) Validate(_struct interface{}) (err error) {
 		}
 
 		for _, err := range _errorValidationStruct.(validator.ValidationErrors) {
-			//Get structnamespace exmple:
+			//Get namespace exmple:
 			// NameStruct.Field => Person.Name
 			// NameStruct.SliceField[0].Field => Person.Hobbies[0].Name
-			struct_name := err.StructNamespace()
+			struct_name := err.Namespace()
 
-			//Split structnamespace
+			//Split namespace
 			//[0] => Name Struct
 			//[1] => Name Field
 			//[3] => Name Field Embeded
