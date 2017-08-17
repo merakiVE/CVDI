@@ -13,16 +13,17 @@ type Activity struct {
 }
 
 type Stage struct {
-	Code string `json:"code"`
-	Name string `json:"name"`
+	Code       string `json:"code"`
+	Name       string `json:"name"`
+	Activities []Activity    `json:"activities,omitempty" validate:"required"`
 }
 
 type ProcedureModel struct {
 	arangoDB.Document
 
-	Owner      string        `json:"owner,omitempty" validate:"required"`
-	Activities []Activity    `json:"activities,omitempty" validate:"required"`
-	Stages     []Stage       `json:"stages"`
+	ID     string        `json:"id" validate:"required" on_create:"set,auto_uuid"`
+	Owner  string        `json:"owner,omitempty" validate:"required"`
+	Stages []Stage       `json:"stages"`
 
 	types.Timestamps
 	ErrorsValidation []map[string]string `json:"errors_validation,omitempty"`
