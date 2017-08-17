@@ -9,7 +9,7 @@ import (
 type NeuronModel struct {
 	arangoDB.Document
 
-	ID   string         `json:"id" validate:"required"`
+	ID   string         `json:"id" validate:"required" on_create:"set,auto_uuid"`
 	Host string         `json:"host" validate:"url,required"`
 	Port int            `json:"port" validate:"required"`
 	Name string         `json:"name" validate:"required"`
