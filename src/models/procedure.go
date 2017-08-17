@@ -12,7 +12,10 @@ type Activity struct {
 	NeuronKey string `json:"neuron_key"`
 }
 
-type Stage struct{}
+type Stage struct {
+	Code string `json:"code"`
+	Name string `json:"name"`
+}
 
 type ProcedureModel struct {
 	arangoDB.Document
