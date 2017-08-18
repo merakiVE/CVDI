@@ -10,6 +10,7 @@ import (
 
 type Activity struct {
 	NeuronKey string `json:"neuron_key"`
+	ActionID string `json:"action_id"`
 }
 
 type Stage struct {
