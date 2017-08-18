@@ -14,6 +14,10 @@ type StructProcessorTag struct {
 	rulesTag map[string]HandleFuncTag
 }
 
+/*
+	Funcion para crear un nuevo procesor tag
+	registra todas las rules dentro de la estructura de datos
+ */
 func New() (*StructProcessorTag) {
 	sp := &StructProcessorTag{
 		rulesTag: make(map[string]HandleFuncTag, len(defaultTagsRules)),
@@ -26,6 +30,9 @@ func New() (*StructProcessorTag) {
 	return sp
 }
 
+/*
+	Funcion que obtiene el manejador de la regla, osea la funcion que procesa la regla
+ */
 func (this StructProcessorTag) GetHandleRule(_tag string) (HandleFuncTag) {
 
 	v, ok := this.rulesTag[_tag]
@@ -36,6 +43,9 @@ func (this StructProcessorTag) GetHandleRule(_tag string) (HandleFuncTag) {
 	return nil
 }
 
+/*
+	Funcion para registrar las reglas en el processor tag
+ */
 func (this *StructProcessorTag) RegisterHandleRule(_tag string, _fn HandleFuncTag) (error) {
 
 	isTagRestricted := false
