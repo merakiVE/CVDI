@@ -8,15 +8,27 @@ import (
 	"github.com/merakiVE/CVDI/core/tags"
 )
 
+//Structs for BPMN
+type Lane struct {
+	Name       string        `json:"name"`
+	InPool     bool          `json:"in_pool"`
+	NamePool   string        `json:"name_pool"`
+	Activities []Activity    `json:"activities,omitempty" validate:"required"`
+}
+
+type Bpmn struct {
+	Lanes []Lane `json:"lanes"`
+}
+
 type Activity struct {
 	NeuronKey string `json:"neuron_key"`
-	ActionID string `json:"action_id"`
+	ActionID  string `json:"action_id"`
+	Sequence  int32    `json:"sequence"`
 }
 
 type Stage struct {
-	Code       string `json:"code"`
-	Name       string `json:"name"`
-	Activities []Activity    `json:"activities,omitempty" validate:"required"`
+	Code string `json:"code"`
+	Name string `json:"name"`
 }
 
 type ProcedureModel struct {
