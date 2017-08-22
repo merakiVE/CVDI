@@ -24,14 +24,15 @@ type Activity struct {
 	NeuronKey string `json:"neuron_key"`
 	ActionID  string `json:"action_id"`
 	Sequence  int32    `json:"sequence"`
+	Inputs    map[string]interface{} `json:"inputs"`
 }
 
 type ProcedureModel struct {
 	arangoDB.Document
 
-	ID     string        `json:"id" validate:"required" on_create:"set,auto_uuid"`
-	Owner  string        `json:"owner,omitempty" validate:"required"`
-	
+	ID    string        `json:"id" validate:"required" on_create:"set,auto_uuid"`
+	Owner string        `json:"owner,omitempty" validate:"required"`
+
 	types.Timestamps
 	ErrorsValidation []map[string]string `json:"errors_validation,omitempty"`
 }
