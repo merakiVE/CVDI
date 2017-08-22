@@ -20,16 +20,6 @@ type ResponseAPI struct {
 	Errors  interface{} `json:"errors"`
 }
 
-type Citizen struct {
-	arangoDB.Document
-
-	FirstName        string `json:"first_name"`
-	LastName         string `json:"last_name"`
-	IdentityDocument string `json:"identity_document"`
-	Phone            string `json:"phone"`
-	Address          string `json:"address"`
-}
-
 type UserCredentials struct {
 	Username string `json:"username"`
 	Password string `json:"password"`
