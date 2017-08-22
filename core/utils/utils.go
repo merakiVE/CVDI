@@ -11,6 +11,7 @@ import (
 	"os"
 	"path"
 	"strings"
+	"github.com/satori/go.uuid"
 )
 
 func ReadBinaryFile(_path string) ([]byte, error) {
@@ -26,6 +27,10 @@ func Exists(path string) (bool) {
 
 func IsEmptyString(str string) (bool) {
 	return len(strings.TrimSpace(str)) == 0
+}
+
+func GenerateUUIDV4() (string) {
+	return strings.Replace(uuid.NewV4().String(), "-", "", -1)
 }
 
 /*
