@@ -5,7 +5,7 @@ import (
 	"reflect"
 	"time"
 	"golang.org/x/crypto/bcrypt"
-	"github.com/satori/go.uuid"
+	"github.com/merakiVE/CVDI/core/utils"
 )
 
 type FieldParamStruct struct {
@@ -93,7 +93,7 @@ func RuleOnCreate(f FieldParam) () {
 
 				if f.GetField().Kind() == reflect.String {
 					//Generate uuid and set value to field
-					f.GetField().Set(uuid.NewV4().String())
+					f.GetField().Set(utils.GenerateUUIDV4())
 				}
 			}
 		}
