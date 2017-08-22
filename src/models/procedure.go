@@ -26,18 +26,12 @@ type Activity struct {
 	Sequence  int32    `json:"sequence"`
 }
 
-type Stage struct {
-	Code string `json:"code"`
-	Name string `json:"name"`
-}
-
 type ProcedureModel struct {
 	arangoDB.Document
 
 	ID     string        `json:"id" validate:"required" on_create:"set,auto_uuid"`
 	Owner  string        `json:"owner,omitempty" validate:"required"`
-	Stages []Stage       `json:"stages"`
-
+	
 	types.Timestamps
 	ErrorsValidation []map[string]string `json:"errors_validation,omitempty"`
 }
