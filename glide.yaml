@@ -12,6 +12,7 @@ import:
   - middleware/logger
 - package: github.com/spf13/viper
 - package: github.com/urfave/cli
+- package: github.com/satori/go.uuid
 - package: gopkg.in/go-playground/validator.v9
   subpackages:
   - translations/en
