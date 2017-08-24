@@ -7,26 +7,24 @@ import (
 func TestProcedure(t *testing.T) {
 
 	a1 := []Activity{
-		{"Cotizacion de Pedido", "/banesco/debitar", "id1", 1},
-		{"Solicitud a maquilador", "/saime/get/cedula", "id2", 2},
+		{"Cotizacion de Pedido", "/banesco/debitar", "id1", 1, nil},
+		{"Solicitud a maquilador", "/saime/get/cedula", "id2", 2, nil},
 	}
 
 	a2 := []Activity{
-		{"Envio a cliente", "/banesco/debitar", "id3", 3},
-		{"Recepcion de pago", "/saime/get/cedula", "id4", 4},
+		{"Envio a cliente", "/banesco/debitar", "id3", 3, nil},
+		{"Recepcion de pago", "/saime/get/cedula", "id4", 4, nil},
 	}
 
 	lan := []Lane{
 		{
 			Name:       "Cliente",
 			InPool:     false,
-			NamePool:   "",
 			Activities: a1,
 		},
 		{
 			Name:       "Comercializador",
 			InPool:     false,
-			NamePool:   "",
 			Activities: a2,
 		},
 	}
