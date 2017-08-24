@@ -67,7 +67,7 @@ type Activity struct {
 	NeuronKey string `json:"neuron_key"`
 	ActionID  string `json:"action_id"`
 	Sequence  int32    `json:"sequence"`
-	Inputs    map[string]interface{} `json:"inputs"`
+	InputData map[string]interface{} `json:"inputs"`
 }
 
 type ProcedureModel struct {
