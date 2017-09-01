@@ -26,6 +26,12 @@ func init() {
 			UsageText:   "CVDI run port_number or CVDI runserver",
 			Description: "Run develop server",
 			Action:      RunServer,
+			Flags: []cli.Flag{
+				cli.BoolFlag{
+					Name:  "enable-cors, cors",
+					Usage: "Enable cors in server",
+				},
+			},
 			OnUsageError: func(c *cli.Context, err error, isSubcommand bool) error {
 				fmt.Fprintf(c.App.Writer, "Error run server\n")
 				return err

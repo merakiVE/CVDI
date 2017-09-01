@@ -4,12 +4,12 @@ import (
 	"github.com/urfave/cli"
 	"github.com/kataras/iris"
 	"github.com/kataras/iris/middleware/logger"
+	"github.com/iris-contrib/middleware/cors"
 
 	"github.com/merakiVE/CVDI/src/controllers"
 	packageConfig "github.com/merakiVE/CVDI/core/config"
 	"github.com/merakiVE/CVDI/core"
 	"strings"
-	//"github.com/kataras/iris/context"
 )
 
 var (
@@ -38,6 +38,16 @@ func RunServer(c *cli.Context) error {
 	})
 
 	app.Use(APILogger)
+
+	if (c.IsSet("enable-cors")) {
+		app.WrapRouter(cors.WrapNext(cors.Options{
+			AllowedOrigins:   []string{"*"},
+			AllowedMethods:   []string{"OPTIONS", "GET", "POST", "PUT", "DELETE"},
+			AllowedHeaders:   []string{"*"},
+			AllowCredentials: true,
+			Debug:            true,
+		}))
+	}
 
 	//Load configuration
 	config.Load()
