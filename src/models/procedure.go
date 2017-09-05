@@ -16,7 +16,7 @@ type Lane struct {
 }
 
 type Activity struct {
-	ID         string `json:"id"`
+	ID         string `json:"id" validate:"required" on_create:"set,auto_uuid"`
 	Name       string `json:"name"`
 	NeuronKey  string `json:"neuron_key"`
 	ActionID   string `json:"action_id"`
