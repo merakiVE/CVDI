@@ -9,7 +9,7 @@ import (
 )
 
 type Lane struct {
-	ID            string `json:"id"`
+	//ID            string `json:"id"`
 	Name          string `json:"name"`
 	PoolRef       string `json:"pool_ref"`
 	ActivitiesRef []string `json:"activities_ref"`
@@ -63,8 +63,20 @@ func (this *ProcedureModel) PreSave(c *arangoDB.Context) {
 
 	if v.IsValid() {
 
+		ptag := tags.New()
+
 		//Tag Process for model
-		tags.New().ProcessTags(this)
+		ptag.ProcessTags(this)
+
+		//Process tag to struct slice
+		for i := range this.Lanes {
+			ptag.ProcessTags(&this.Lanes[i])
+		}
+
+		for i := range this.Activities {
+			ptag.ProcessTags(&this.Activities[i])
+		}
+
 	} else {
 
 		c.Err["error_validation"] = "Error validating model"
