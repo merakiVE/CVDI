@@ -20,7 +20,7 @@ type Activity struct {
 	Name       string `json:"name"`
 	NeuronKey  string `json:"neuron_key"`
 	ActionID   string `json:"action_id"`
-	Sequence   int32  `json:"sequence"`
+	Sequence   int  `json:"sequence"`
 	Type       string `json:"type"` //manually - automatic
 	InputData  map[string]interface{} `json:"input_data"`
 	OutputData map[string]interface{} `json:"output_data"`
