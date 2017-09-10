@@ -13,6 +13,8 @@ import (
 type UserModel struct {
 	arangoDB.Document
 
+	FirstName string    `json:"first_name"`
+	LastName  string    `json:"last_name"`
 	Username  string    `json:"username,omitempty" validate:"required"`
 	Email     string    `json:"email,omitempty" validate:"required,email"`
 	Password  string    `json:"password,omitempty" validate:"required" on_create:"make_password"`
