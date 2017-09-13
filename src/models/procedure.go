@@ -29,7 +29,7 @@ type Activity struct {
 type ProcedureModel struct {
 	arangoDB.Document
 
-	ID         string        `json:"id" validate:"required" on_create:"set,auto_uuid"`
+	ID         string        `json:"id" on_create:"set,auto_uuid"`
 	Owner      string        `json:"owner,omitempty" validate:"required"`
 	Pool       string        `json:"pool"`
 	Lanes      []Lane        `json:"lanes"`
