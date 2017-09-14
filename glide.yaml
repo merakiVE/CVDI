@@ -3,6 +3,8 @@ import:
 - package: github.com/hostelix/aranGO
 - package: github.com/fatih/structs
 - package: github.com/go-playground/locales
+- package: github.com/garyburd/redigo/redis
+- package: github.com/gocraft/work
   subpackages:
   - en
 - package: github.com/go-playground/universal-translator
