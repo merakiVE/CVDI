@@ -61,7 +61,7 @@ Generar llave publica y privada con el CLI
     CVDI gen keys
 
 Crear el archivo de configuracion en la raiz del proyecto, que llevara por nombre "cvdi.conf"
-    {
+    ``{
       "DATABASE" : {
         "DB_HOST" : "",
         "DB_NAME" : "",
@@ -72,7 +72,7 @@ Crear el archivo de configuracion en la raiz del proyecto, que llevara por nombr
       "PATH_KEYS": "",
       "PUBLIC_KEY_PATH" : ".pem",
       "PRIVATE_KEY_PATH" : ".pem"
-    }
+    }``
 
 
 ## ¿Cómo puedo contribuir? 
