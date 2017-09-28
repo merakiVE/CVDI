@@ -193,9 +193,9 @@ func (this NeuronController) CreateAction(_context context.Context) {
 	neuron.Actions = append(neuron.Actions, new_action)
 
 	//Update actions model in database
-	success = db.ReplaceModel(db.GetCurrentDatabase(), neuron)
+	err = db.ReplaceModel(db.GetCurrentDatabase(), neuron)
 
-	if !success {
+	if err != nil {
 		_context.StatusCode(iris.StatusInternalServerError)
 		_context.JSON(types.ResponseAPI{
 			Message: "Error to the add new action to neuron",
