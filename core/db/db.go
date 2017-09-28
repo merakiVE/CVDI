@@ -2,7 +2,6 @@ package db
 
 import (
 	"reflect"
-	"log"
 
 	arangoDB "github.com/hostelix/aranGO"
 	"github.com/merakiVE/CVDI/core/config"
@@ -26,7 +25,6 @@ func init() {
 }
 
 func GetSessionDB() *arangoDB.Session {
-
 	//Connection ArangoDB
 	s, err := arangoDB.Connect(DBHOST, DBUSER, DBPASSWORD, false)
 
@@ -44,71 +42,55 @@ func GetDatabase(nameDB string) *arangoDB.Database {
 	return GetSessionDB().DB(nameDB)
 }
 
-func Save(_db *arangoDB.Database, _model arangoDB.Modeler) error {
-
-	err := _db.Col(_model.GetCollection()).Save(_model)
-
-	return err
+func Save(db *arangoDB.Database, model arangoDB.Modeler) error {
+	return db.Col(model.GetCollection()).Save(model)
 }
 
-func SaveModel(_db *arangoDB.Database, _model arangoDB.Modeler) (bool) {
+func SaveModel(db *arangoDB.Database, model arangoDB.Modeler) (bool) {
 
-	if reflect.ValueOf(_model).Kind() != reflect.Ptr {
+	if reflect.ValueOf(model).Kind() != reflect.Ptr {
 		panic("Check model must be a pointer")
 	}
 
-	ctx, err := arangoDB.NewContext(_db)
+	ctx, err := arangoDB.NewContext(db)
 
 	if err != nil {
 		panic(err)
 	}
 
 	// save model, returns map of errors or empty map
-	e := ctx.Save(_model)
-
 	// check errors, also Error is saved in Context struct
-	if len(e) >= 1 {
+	if e := ctx.Save(model); len(e) >= 1 {
 		return false
 	}
-
 	return true
 }
 
-func GetModel(_db *arangoDB.Database, _model arangoDB.Modeler) (bool) {
+func GetModel(db *arangoDB.Database, model arangoDB.Modeler) (bool) {
 
-	if reflect.ValueOf(_model).Kind() != reflect.Ptr {
+	if reflect.ValueOf(model).Kind() != reflect.Ptr {
 		panic("Check model must be a pointer")
 	}
 
-	ctx, err := arangoDB.NewContext(_db)
+	ctx, err := arangoDB.NewContext(db)
 
 	if err != nil {
-		log.Fatal(err)
 		panic(err)
 	}
 
 	// save model, returns map of errors or empty map
-	e := ctx.Get(_model)
-
 	// check errors, also Error is saved in Context struct
-	if len(e) >= 1 {
+	if e := ctx.Get(model); len(e) >= 1 {
 		return false
 	}
-
 	return true
 }
 
-func ReplaceModel(_db *arangoDB.Database, _model arangoDB.Modeler) (bool) {
+func ReplaceModel(db *arangoDB.Database, model arangoDB.Modeler) (error) {
 
-	if utils.IsEmptyString(_model.GetKey()) {
+	if utils.IsEmptyString(model.GetKey()) {
 		panic("Check key is empty")
 	}
 
-	err := _db.Col(_model.GetCollection()).Replace(_model.GetKey(), _model)
-
-	if err != nil {
-		log.Fatal(err)
-		return false
-	}
-	return true
+	return db.Col(model.GetCollection()).Replace(model.GetKey(), model)
 }
