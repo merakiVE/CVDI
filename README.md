@@ -61,19 +61,6 @@ Generar llave publica y privada con el CLI
     CVDI gen keys
 
 Renombrar el archivo "cvdi.conf.exmaple" por "cvdi.conf" y colocar el archivo en la raiz del proyecto o "/etc/cvdi/cvdi.conf" o "/opt/cvdi/cvdi.conf"
-    ``{
-      "DATABASE" : {
-        "DB_HOST" : "",
-        "DB_NAME" : "",
-        "DB_USER" : "",
-        "DB_PASSWORD" : "",
-        "DB_PORT": ""
-      },
-      "PATH_KEYS": "",
-      "PUBLIC_KEY_PATH" : ".pem",
-      "PRIVATE_KEY_PATH" : ".pem"
-    }``
-
 
 ## ¿Cómo puedo contribuir? 
 Solo debes leer el archivo `contributing.md`, que encontraras en [este enlace](https://github.com/merakive/cvdi/blob/master/.github/CONTRIBUTING.md)
