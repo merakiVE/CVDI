@@ -60,7 +60,7 @@ Generar llave publica y privada con el CLI
     CVDI generate keys
     CVDI gen keys
 
-Crear el archivo de configuracion en la raiz del proyecto, que llevara por nombre "cvdi.conf"
+Renombrar el archivo "cvdi.conf.exmaple" por "cvdi.conf" y colocar el archivo en la raiz del proyecto o "/etc/cvdi/cvdi.conf" o "/opt/cvdi/cvdi.conf"
     ``{
       "DATABASE" : {
         "DB_HOST" : "",
