@@ -8,7 +8,8 @@ import (
 	"github.com/merakiVE/CVDI/core/utils"
 )
 
-var DBHOST, DBUSER, DBPASSWORD string
+var DBHOST, DBUSER, DBPASSWORD, DBNAME string
+var DBLOG bool
 
 var configGlobal config.Configuration
 
@@ -21,12 +22,14 @@ func init() {
 	DBHOST = configGlobal.GetString("DATABASE.DB_HOST") + ":" + configGlobal.GetString("DATABASE.DB_PORT")
 	DBUSER = configGlobal.GetString("DATABASE.DB_USER")
 	DBPASSWORD = configGlobal.GetString("DATABASE.DB_PASSWORD")
+	DBNAME = configGlobal.GetString("DATABASE.DB_NAME")
+	DBLOG = false
 
 }
 
 func GetSessionDB() *arangoDB.Session {
 	//Connection ArangoDB
-	s, err := arangoDB.Connect(DBHOST, DBUSER, DBPASSWORD, false)
+	s, err := arangoDB.Connect(DBHOST, DBUSER, DBPASSWORD, DBLOG)
 
 	if err != nil {
 		panic(err)
@@ -35,7 +38,7 @@ func GetSessionDB() *arangoDB.Session {
 }
 
 func GetCurrentDatabase() *arangoDB.Database {
-	return GetSessionDB().DB(configGlobal.GetString("DATABASE.DB_NAME"))
+	return GetSessionDB().DB(DBNAME)
 }
 
 func GetDatabase(nameDB string) *arangoDB.Database {
