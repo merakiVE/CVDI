@@ -3,7 +3,7 @@ package db
 import (
 	"reflect"
 	"errors"
-	
+
 	arangoDB "github.com/hostelix/aranGO"
 	"github.com/merakiVE/CVDI/core/config"
 	"github.com/merakiVE/CVDI/core/utils"
@@ -131,7 +131,7 @@ type modelDB struct {
 	db      *arangoDB.Database
 }
 
-func (this *modelDB) Create(m *arangoDB.Modeler) (error) {
+func (this *modelDB) Create(m arangoDB.Modeler) (error) {
 	ctx, err := arangoDB.NewContext(this.db)
 	if err != nil {
 		return err
