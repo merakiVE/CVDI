@@ -2,7 +2,8 @@ package db
 
 import (
 	"reflect"
-
+	"errors"
+	
 	arangoDB "github.com/hostelix/aranGO"
 	"github.com/merakiVE/CVDI/core/config"
 	"github.com/merakiVE/CVDI/core/utils"
@@ -24,7 +25,6 @@ func init() {
 	DBPASSWORD = configGlobal.GetString("DATABASE.DB_PASSWORD")
 	DBNAME = configGlobal.GetString("DATABASE.DB_NAME")
 	DBLOG = false
-
 }
 
 func GetSessionDB() *arangoDB.Session {
@@ -96,4 +96,79 @@ func ReplaceModel(db *arangoDB.Database, model arangoDB.Modeler) (error) {
 	}
 
 	return db.Col(model.GetCollection()).Replace(model.GetKey(), model)
+}
+
+func FindModel(db *arangoDB.Database, model arangoDB.Modeler, filter ...interface{}) (error) {
+	kindModel := reflect.ValueOf(model).Kind()
+
+	if kindModel == reflect.Slice || kindModel == reflect.Array {
+		panic("Check model no must be a slice or array")
+	}
+
+	aql := arangoDB.NewAqlStruct()
+	aql.For("v", model.GetCollection())
+	aql.Filter(filter...)
+	aql.Return("v")
+
+	c, err := aql.Execute(db)
+
+	if err != nil {
+		return err
+	}
+	c.FetchOne(model)
+	return nil
+}
+
+func Model(model arangoDB.Modeler, db *arangoDB.Database) *modelDB {
+	return &modelDB{
+		modeler: model,
+		db:      db,
+	}
+}
+
+type modelDB struct {
+	modeler arangoDB.Modeler
+	db      *arangoDB.Database
+}
+
+func (this *modelDB) Create(m *arangoDB.Modeler) (error) {
+	ctx, err := arangoDB.NewContext(this.db)
+	if err != nil {
+		return err
+	}
+	if e := ctx.Save(m); len(e) >= 1 {
+		return errors.New("Error save model in database")
+	}
+	return nil
+}
+
+func (this *modelDB) FindOne(out interface{}, filter ...interface{}) (error) {
+	aql := arangoDB.NewAqlStruct()
+	aql.For("v", this.modeler.GetCollection())
+	aql.Filter(filter...)
+	aql.Return("v")
+
+	c, err := aql.Execute(this.db)
+	if err != nil {
+		return err
+	}
+
+	if ok := c.FetchOne(out); !ok {
+		return errors.New("Error get data")
+	}
+
+	return nil
+}
+
+func (this *modelDB) Find(out interface{}, filter ...interface{}) (error) {
+	aql := arangoDB.NewAqlStruct()
+	aql.For("v", this.modeler.GetCollection())
+	aql.Filter(filter...)
+	aql.Return("v")
+
+	c, err := aql.Execute(this.db)
+	if err != nil {
+		return err
+	}
+	return c.FetchBatch(out)
 }
