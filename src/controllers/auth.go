@@ -12,10 +12,11 @@ import (
 	"github.com/merakiVE/CVDI/src/models"
 
 	"github.com/merakiVE/CVDI/core"
-	"github.com/merakiVE/CVDI/core/db"
 	"github.com/merakiVE/CVDI/core/auth"
 	"github.com/merakiVE/CVDI/core/types"
-	"github.com/merakiVE/CVDI/core/utils"
+
+	"github.com/merakiVE/koinos/db"
+	"github.com/merakiVE/koinos/utils"
 )
 
 type AuthController struct {

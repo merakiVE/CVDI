@@ -4,10 +4,11 @@ import (
 	"github.com/kataras/iris"
 	"github.com/kataras/iris/context"
 
-	"github.com/merakiVE/CVDI/core/db"
 	"github.com/merakiVE/CVDI/core/types"
 	"github.com/merakiVE/CVDI/core"
 	"github.com/merakiVE/CVDI/src/models"
+
+	"github.com/merakiVE/koinos/db"
 
 	arangoDB "github.com/hostelix/aranGO"
 )
