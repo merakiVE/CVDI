@@ -5,7 +5,7 @@ import (
 	"reflect"
 	"time"
 	"golang.org/x/crypto/bcrypt"
-	"github.com/merakiVE/CVDI/core/utils"
+	"github.com/merakiVE/koinos/utils"
 )
 
 type FieldParamStruct struct {

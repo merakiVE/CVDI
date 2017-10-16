@@ -1,7 +1,7 @@
 package core
 
 import (
-	"github.com/merakiVE/CVDI/core/config"
+	"github.com/merakiVE/koinos/config"
 	"github.com/kataras/iris"
 )
 

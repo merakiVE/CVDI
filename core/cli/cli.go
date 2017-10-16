@@ -3,10 +3,10 @@ package cli
 import (
 	"github.com/urfave/cli"
 	"fmt"
-	"github.com/merakiVE/CVDI/core/utils"
+	"github.com/merakiVE/koinos/utils"
 	"path"
-	packageConfig "github.com/merakiVE/CVDI/core/config"
-	//"errors"
+
+	packageConfig "github.com/merakiVE/koinos/config"
 )
 
 var CommandsCLI cli.Commands
