@@ -1,15 +1,17 @@
 package cli
 
 import (
+	"strings"
+
 	"github.com/urfave/cli"
 	"github.com/kataras/iris"
 	"github.com/kataras/iris/middleware/logger"
 	"github.com/iris-contrib/middleware/cors"
 
 	"github.com/merakiVE/CVDI/src/controllers"
-	packageConfig "github.com/merakiVE/CVDI/core/config"
 	"github.com/merakiVE/CVDI/core"
-	"strings"
+
+	packageConfig "github.com/merakiVE/koinos/config"
 )
 
 var (
