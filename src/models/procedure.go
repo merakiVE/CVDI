@@ -1,6 +1,8 @@
 package models
 
 import (
+	"errors"
+	
 	arangoDB "github.com/hostelix/aranGO"
 
 	"github.com/merakiVE/CVDI/core/types"
@@ -53,6 +55,15 @@ func (this ProcedureModel) GetError() (string, bool) {
 
 func (this ProcedureModel) GetValidationErrors() ([]map[string]string) {
 	return this.ErrorsValidation
+}
+
+func (this ProcedureModel) GetFirstActivity() (Activity, error) {
+	for _, a := range this.Activities {
+		if a.Sequence == 1 {
+			return a, nil
+		}
+	}
+	return Activity{}, errors.New("Not found activities")
 }
 
 func (this *ProcedureModel) PreSave(c *arangoDB.Context) {
