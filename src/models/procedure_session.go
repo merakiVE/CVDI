@@ -9,8 +9,8 @@ import (
 type ProcedureSessionModel struct {
 	arangoDB.Document
 
-	ID           string        `json:"id" validate:"required" on_create:"set,auto_uuid"`
-	ProcedureID  string        `json:"id" validate:"required" on_create:"set,auto_uuid"`
+	ID           string        `json:"id" on_create:"set,auto_uuid"`
+	ProcedureID  string        `json:"procedure_id" validate:"required"`
 	UserID       string        `json:"user_id,omitempty" validate:"required"`
 	CurrentStage int           `json:"stage"`
 
