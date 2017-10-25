@@ -2,7 +2,7 @@ package models
 
 import (
 	"errors"
-	
+
 	arangoDB "github.com/hostelix/aranGO"
 
 	"github.com/merakiVE/CVDI/core/types"
@@ -63,6 +63,27 @@ func (this ProcedureModel) GetFirstActivity() (Activity, error) {
 			return a, nil
 		}
 	}
+	return Activity{}, errors.New("Not found activities")
+}
+
+func (this ProcedureModel) GetNextActivity(activity_id string) (Activity, error) {
+	var tmp_act Activity
+	var next_sequence int
+
+	for _, a := range this.Activities {
+		if a.ID == activity_id {
+			tmp_act = a
+		}
+	}
+
+	next_sequence = tmp_act.Sequence + 1
+
+	for _, a := range this.Activities {
+		if a.Sequence == next_sequence {
+			return a, nil
+		}
+	}
+
 	return Activity{}, errors.New("Not found activities")
 }
 
