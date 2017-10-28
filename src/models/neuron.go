@@ -1,6 +1,8 @@
 package models
 
 import (
+	"errors"
+
 	arangoDB "github.com/hostelix/aranGO"
 	"github.com/merakiVE/CVDI/core/validator"
 	"github.com/merakiVE/CVDI/core/tags"
@@ -34,6 +36,15 @@ func (this NeuronModel) GetError() (string, bool) {
 
 func (this NeuronModel) GetValidationErrors() ([]map[string]string) {
 	return this.ErrorsValidation
+}
+
+func (this NeuronModel) GetAction(id string) (ActionNeuron, error) {
+	for _, an := range this.Actions {
+		if an.ID == id {
+			return an, nil
+		}
+	}
+	return ActionNeuron{}, errors.New("Action ID not found")
 }
 
 func (this *NeuronModel) PreSave(c *arangoDB.Context) {
