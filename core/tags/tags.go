@@ -23,8 +23,8 @@ func New() (*StructProcessorTag) {
 		rulesTag: make(map[string]HandleFuncTag, len(defaultTagsRules)),
 	}
 
-	for _key, _fn := range defaultTagsRules {
-		sp.RegisterHandleRule(_key, _fn)
+	for key, fn := range defaultTagsRules {
+		sp.RegisterHandleRule(key, fn)
 	}
 
 	return sp
@@ -33,9 +33,9 @@ func New() (*StructProcessorTag) {
 /*
 	Funcion que obtiene el manejador de la regla, osea la funcion que procesa la regla
  */
-func (this StructProcessorTag) GetHandleRule(_tag string) (HandleFuncTag) {
+func (this StructProcessorTag) GetHandleRule(tag string) (HandleFuncTag) {
 
-	v, ok := this.rulesTag[_tag]
+	v, ok := this.rulesTag[tag]
 
 	if ok {
 		return v
@@ -46,38 +46,38 @@ func (this StructProcessorTag) GetHandleRule(_tag string) (HandleFuncTag) {
 /*
 	Funcion para registrar las reglas en el processor tag
  */
-func (this *StructProcessorTag) RegisterHandleRule(_tag string, _fn HandleFuncTag) (error) {
+func (this *StructProcessorTag) RegisterHandleRule(tag string, fn HandleFuncTag) (error) {
 
 	isTagRestricted := false
 
 	//Verify if new tag handle rule is reserved
 	for _, tag_value := range reservedTags {
-		if tag_value == _tag {
+		if tag_value == tag {
 			isTagRestricted = true
 			break
 		}
 	}
 
 	if isTagRestricted {
-		return errors.New("Name tag: " + _tag + " is reserved")
+		return errors.New("Name tag: " + tag + " is reserved")
 	}
 
-	if len(_tag) == 0 {
+	if len(tag) == 0 {
 		return errors.New("Function Key cannot be empty")
 	}
 
-	if _fn == nil {
+	if fn == nil {
 		return errors.New("Function cannot be empty")
 	}
 
-	this.rulesTag[_tag] = _fn
+	this.rulesTag[tag] = fn
 
 	return nil
 }
 
-func GetKeysTagField(_model interface{}, _fieldName string) ([]string) {
+func GetKeysTagField(model interface{}, fieldName string) ([]string) {
 
-	tag, _ := model.Tag(_model, _fieldName)
+	tag, _ := model.Tag(model, fieldName)
 
 	tags, err := structtag.Parse(string(tag))
 
@@ -89,11 +89,11 @@ func GetKeysTagField(_model interface{}, _fieldName string) ([]string) {
 }
 
 
-func GetMapTagField(_model interface{}, _fieldName string) (map[string]*structtag.Tag) {
+func GetMapTagField(model interface{}, fieldName string) (map[string]*structtag.Tag) {
 
 	map_field := make(map[string]*structtag.Tag, 0)
 
-	tag, _ := model.Tag(_model, _fieldName)
+	tag, _ := model.Tag(model, fieldName)
 
 	tags, err := structtag.Parse(string(tag))
 
@@ -108,16 +108,16 @@ func GetMapTagField(_model interface{}, _fieldName string) (map[string]*structta
 	return map_field
 }
 
-func (this StructProcessorTag) ProcessTags(_model interface{}) {
+func (this StructProcessorTag) ProcessTags(model interface{}) {
 
-	modelFields := structs.Fields(_model)
+	modelFields := structs.Fields(model)
 
 	for _, field := range modelFields {
 
 		if field.IsEmbedded() {
 			for _, fieldE := range field.Fields() {
 
-				data_tags := GetMapTagField(_model, fieldE.Name())
+				data_tags := GetMapTagField(model, fieldE.Name())
 
 				for key, value_tag := range data_tags {
 
@@ -133,7 +133,7 @@ func (this StructProcessorTag) ProcessTags(_model interface{}) {
 				}
 			}
 		} else {
-			data_tags := GetMapTagField(_model, field.Name())
+			data_tags := GetMapTagField(model, field.Name())
 
 			for key, value_tag := range data_tags {
 
