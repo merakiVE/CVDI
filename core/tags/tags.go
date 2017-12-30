@@ -3,7 +3,7 @@ package tags
 import (
 	"errors"
 
-	"gopkg.in/jeevatkm/go-model.v1"
+	goModel "gopkg.in/jeevatkm/go-model.v1"
 	"github.com/fatih/structs"
 	"github.com/fatih/structtag"
 )
@@ -77,7 +77,7 @@ func (this *StructProcessorTag) RegisterHandleRule(tag string, fn HandleFuncTag)
 
 func GetKeysTagField(model interface{}, fieldName string) ([]string) {
 
-	tag, _ := model.Tag(model, fieldName)
+	tag, _ := goModel.Tag(model, fieldName)
 
 	tags, err := structtag.Parse(string(tag))
 
@@ -93,7 +93,7 @@ func GetMapTagField(model interface{}, fieldName string) (map[string]*structtag.
 
 	map_field := make(map[string]*structtag.Tag, 0)
 
-	tag, _ := model.Tag(model, fieldName)
+	tag, _ := goModel.Tag(model, fieldName)
 
 	tags, err := structtag.Parse(string(tag))
 
