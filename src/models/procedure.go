@@ -12,18 +12,18 @@ import (
 
 type Lane struct {
 	//ID            string `json:"id"`
-	Name          string `json:"name"`
-	PoolRef       string `json:"pool_ref"`
+	Name          string   `json:"name"`
+	PoolRef       string   `json:"pool_ref"`
 	ActivitiesRef []string `json:"activities_ref"`
 }
 
-type Activity struct {
-	ID         string `json:"id" on_create:"set,auto_uuid"`
-	Name       string `json:"name"`
-	NeuronKey  string `json:"neuron_key"`
-	ActionID   string `json:"action_id"`
-	Sequence   int  `json:"sequence"`
-	Type       string `json:"type"` //manually - automatic
+type Task struct {
+	ID         string                 `json:"id" on_create:"set,auto_uuid"`
+	Name       string                 `json:"name"`
+	NeuronKey  string                 `json:"neuron_key"`
+	ActionID   string                 `json:"action_id"`
+	Sequence   int                    `json:"sequence"`
+	Type       string                 `json:"type"` //manually - automatic
 	InputData  map[string]interface{} `json:"input_data"`
 	OutputData map[string]interface{} `json:"output_data"`
 }
@@ -31,11 +31,11 @@ type Activity struct {
 type ProcedureModel struct {
 	arangoDB.Document
 
-	ID         string        `json:"id" on_create:"set,auto_uuid"`
-	Owner      string        `json:"owner,omitempty" validate:"required"`
-	Pool       string        `json:"pool"`
-	Lanes      []Lane        `json:"lanes"`
-	Activities []Activity    `json:"activities,omitempty" validate:"required"`
+	ID    string `json:"id" on_create:"set,auto_uuid"`
+	Owner string `json:"owner,omitempty" validate:"required"`
+	Pool  string `json:"pool"`
+	Lanes []Lane `json:"lanes"`
+	Tasks []Task `json:"tasks,omitempty" validate:"required"`
 
 	types.Timestamps
 	ErrorsValidation []map[string]string `json:"errors_validation,omitempty"`
@@ -57,34 +57,34 @@ func (this ProcedureModel) GetValidationErrors() ([]map[string]string) {
 	return this.ErrorsValidation
 }
 
-func (this ProcedureModel) GetFirstActivity() (Activity, error) {
-	for _, a := range this.Activities {
+func (this ProcedureModel) GetFirstTask() (*Task, error) {
+	for _, a := range this.Tasks {
 		if a.Sequence == 1 {
-			return a, nil
+			return &a, nil
 		}
 	}
-	return Activity{}, errors.New("Not found activities")
+	return nil, errors.New("Not found Task")
 }
 
-func (this ProcedureModel) GetNextActivity(activity_id string) (Activity, error) {
-	var tmp_act Activity
+func (this ProcedureModel) GetNextTask(task_id string) (*Task, error) {
+	var tmp_act Task
 	var next_sequence int
 
-	for _, a := range this.Activities {
-		if a.ID == activity_id {
+	for _, a := range this.Tasks {
+		if a.ID == task_id {
 			tmp_act = a
 		}
 	}
 
 	next_sequence = tmp_act.Sequence + 1
 
-	for _, a := range this.Activities {
+	for _, a := range this.Tasks {
 		if a.Sequence == next_sequence {
-			return a, nil
+			return &a, nil
 		}
 	}
 
-	return Activity{}, errors.New("Not found activities")
+	return nil, errors.New("Not found Task")
 }
 
 func (this *ProcedureModel) PreSave(c *arangoDB.Context) {
@@ -105,8 +105,8 @@ func (this *ProcedureModel) PreSave(c *arangoDB.Context) {
 			ptag.ProcessTags(&this.Lanes[i])
 		}
 
-		for i := range this.Activities {
-			ptag.ProcessTags(&this.Activities[i])
+		for i := range this.Tasks {
+			ptag.ProcessTags(&this.Tasks[i])
 		}
 
 	} else {
