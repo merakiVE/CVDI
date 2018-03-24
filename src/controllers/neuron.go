@@ -31,7 +31,7 @@ func (this *NeuronController) RegisterRouters() {
 	{
 		routerNeuron.Get("/", this.ListNeurons)
 		routerNeuron.Get("/{neuronKey:string}", this.GetNeuron)
-		routerNeuron.Post("/subscription", this.Subscribe)
+		routerNeuron.Post("/", this.Subscribe)
 		//Action Neuron
 		routerNeuron.Get("/{neuronKey:string}/actions", this.ListActions)
 		routerNeuron.Post("/{neuronKey:string}/actions", this.CreateAction)
