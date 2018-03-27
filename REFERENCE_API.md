@@ -2,7 +2,7 @@
 
 ## Neuron
 > **Model:** Neuron
->  **Source model:** src/models/neuron.go
+> **Source model:** src/models/neuron.go
 > **Endpoint:** /neurons
 
 Small Description
