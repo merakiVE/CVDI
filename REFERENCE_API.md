@@ -1,9 +1,9 @@
 # Reference from API CVDI
 
 ## Neuron
-> **Model:** Neuron
-> **Source model:** src/models/neuron.go
-> **Endpoint:** /neurons
+> **Model:** Neuron<space><space>
+> **Source model:** src/models/neuron.go<space><space>
+> **Endpoint:** /neurons<space><space>
 
 Small Description
 
